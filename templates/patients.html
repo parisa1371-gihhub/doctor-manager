@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}لیست بیماران - سیستم مدیریت بیماران{% endblock %}
+{% block page_title %}لیست بیماران{% endblock %}
+{% block page_subtitle %}مدیریت و مرور پرونده بیماران شما{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-medical-50 to-medical-100 rounded-2xl p-6 border border-medical-200">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+            <div class="mb-6 lg:mb-0">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">همه بیماران</h2>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <div class="flex items-center text-gray-600">
+                        <i data-lucide="users" class="w-5 h-5 ml-2 text-medical-600"></i>
+                        <span>{{ patients|length }} بیمار یافت شد</span>
+                    </div>
+                    <div class="flex items-center text-gray-600">
+                        <i data-lucide="calendar" class="w-5 h-5 ml-2 text-medical-600"></i>
+                        <span>آخرین بروزرسانی: امروز</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4">
+                <!-- Search Bar -->
+                <div class="relative">
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchInput" placeholder="جستجوی بیماران..." 
+                           class="form-input pr-10 w-full sm:w-80 bg-white border-gray-300 focus:border-medical-500 focus:ring-medical-500" 
+                           onkeyup="filterPatients()">
+                </div>
+                
+                <!-- Add Patient Button -->
+                <a href="{% url 'add_patient' %}" class="btn-primary inline-flex items-center justify-center">
+                    <i data-lucide="user-plus" class="w-5 h-5 ml-2"></i>
+                    افزودن بیمار جدید
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Patients Table -->
+    <div class="table-container">
+        {% if patients %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full" id="patientsTable">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="table-cell font-semibold text-gray-700">
+                                <button onclick="sortTable(0)" class="flex items-center hover:text-medical-600 transition-colors">
+                                    <i data-lucide="user" class="w-4 h-4 ml-2"></i>
+                                    نام بیمار
+                                    <i data-lucide="chevron-up-down" class="w-4 h-4 mr-2"></i>
+                                </button>
+                            </th>
+                            <th class="table-cell font-semibold text-gray-700">
+                                <button onclick="sortTable(1)" class="flex items-center hover:text-medical-600 transition-colors">
+                                    <i data-lucide="phone" class="w-4 h-4 ml-2"></i>
+                                    تلفن
+                                    <i data-lucide="chevron-up-down" class="w-4 h-4 mr-2"></i>
+                                </button>
+                            </th>
+                            <th class="table-cell font-semibold text-gray-700">
+                                <button onclick="sortTable(2)" class="flex items-center hover:text-medical-600 transition-colors">
+                                    <i data-lucide="calendar" class="w-4 h-4 ml-2"></i>
+                                    سن
+                                    <i data-lucide="chevron-up-down" class="w-4 h-4 mr-2"></i>
+                                </button>
+                            </th>
+                            <th class="table-cell font-semibold text-gray-700">
+                                <button onclick="sortTable(3)" class="flex items-center hover:text-medical-600 transition-colors">
+                                    <i data-lucide="clock" class="w-4 h-4 ml-2"></i>
+                                    آخرین ویزیت
+                                    <i data-lucide="chevron-up-down" class="w-4 h-4 mr-2"></i>
+                                </button>
+                            </th>
+                            <th class="table-cell font-semibold text-gray-700">
+                                <i data-lucide="activity" class="w-4 h-4 ml-2"></i>
+                                کل ویزیت‌ها
+                            </th>
+                            <th class="table-cell font-semibold text-gray-700">
+                                <i data-lucide="settings" class="w-4 h-4 ml-2"></i>
+                                عملیات
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr class="table-row patient-row">
+                            <td class="table-cell">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-medical-100 to-medical-200 rounded-full flex items-center justify-center">
+                                        <i data-lucide="user" class="w-6 h-6 text-medical-600"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="font-semibold text-gray-900 patient-name">
+                                            {{ patient.full_name }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            کد ملی: {{ patient.national_id }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="table-cell">
+                                <div class="flex items-center text-gray-900 patient-phone">
+                                    <i data-lucide="phone" class="w-4 h-4 ml-2 text-gray-400"></i>
+                                    {{ patient.phone }}
+                                </div>
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge badge-info patient-age">{{ patient.age }} سال</span>
+                            </td>
+                            <td class="table-cell patient-last-visit">
+                                {% if patient.visits.first %}
+                                    <div class="flex items-center text-gray-900">
+                                        <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
+                                        {{ patient.visits.first.visit_date|date:"d M Y" }}
+                                    </div>
+                                {% else %}
+                                    <span class="badge badge-warning">هنوز ویزیتی نداشته</span>
+                                {% endif %}
+                            </td>
+                            <td class="table-cell">
+                                <span class="badge badge-success">
+                                    {{ patient.visits.count }} ویزیت
+                                </span>
+                            </td>
+                            <td class="table-cell">
+                                <div class="flex items-center space-x-2 space-x-reverse">
+                                    <a href="{% url 'patient_detail' patient.id %}" 
+                                       class="btn-secondary text-sm">
+                                        <i data-lucide="eye" class="w-4 h-4 ml-1"></i>
+                                        مشاهده
+                                    </a>
+                                    <a href="{% url 'add_visit' patient.id %}" 
+                                       class="btn-success text-sm">
+                                        <i data-lucide="plus" class="w-4 h-4 ml-1"></i>
+                                        ویزیت
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-20">
+                <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="users" class="w-12 h-12 text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">هیچ بیماری یافت نشد</h3>
+                <p class="text-gray-500 mb-8 max-w-md mx-auto">با افزودن اولین بیمار خود شروع کنید و سیستم مدیریت بیماران خود را راه‌اندازی کنید.</p>
+                <a href="{% url 'add_patient' %}" class="btn-primary inline-flex items-center">
+                    <i data-lucide="user-plus" class="w-5 h-5 ml-2"></i>
+                    افزودن اولین بیمار
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Enhanced search functionality
+function filterPatients() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('patientsTable');
+    const rows = table.getElementsByClassName('patient-row');
+    let visibleCount = 0;
+    
+    for (let i = 0; i < rows.length; i++) {
+        const nameCell = rows[i].getElementsByClassName('patient-name')[0];
+        const phoneCell = rows[i].getElementsByClassName('patient-phone')[0];
+        
+        if (nameCell && phoneCell) {
+            const nameText = nameCell.textContent || nameCell.innerText;
+            const phoneText = phoneCell.textContent || phoneCell.innerText;
+            
+            if (nameText.toLowerCase().indexOf(filter) > -1 || 
+                phoneText.toLowerCase().indexOf(filter) > -1) {
+                rows[i].style.display = '';
+                visibleCount++;
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    }
+    
+    // Update search results count
+    const searchResults = document.getElementById('searchResults');
+    if (searchResults) {
+        searchResults.textContent = `${visibleCount} نتیجه یافت شد`;
+    }
+}
+
+// Enhanced table sorting with visual feedback
+function sortTable(columnIndex) {
+    const table = document.getElementById('patientsTable');
+    const tbody = table.getElementsByTagName('tbody')[0];
+    const rows = Array.from(tbody.getElementsByClassName('patient-row'));
+    const header = table.getElementsByTagName('thead')[0].getElementsByTagName('tr')[0].cells[columnIndex];
+    
+    // Remove existing sort indicators
+    const allHeaders = table.getElementsByTagName('thead')[0].getElementsByTagName('tr')[0].cells;
+    for (let i = 0; i < allHeaders.length; i++) {
+        const chevron = allHeaders[i].querySelector('[data-lucide="chevron-up-down"]');
+        if (chevron) {
+            chevron.setAttribute('data-lucide', 'chevron-up-down');
+        }
+    }
+    
+    // Add sort indicator to current column
+    const chevron = header.querySelector('[data-lucide="chevron-up-down"]');
+    if (chevron) {
+        chevron.setAttribute('data-lucide', 'chevron-up');
+    }
+    
+    rows.sort((a, b) => {
+        const aText = a.cells[columnIndex].textContent.trim();
+        const bText = b.cells[columnIndex].textContent.trim();
+        
+        // Handle different data types
+        if (columnIndex === 2) { // Age column
+            const aAge = parseInt(aText);
+            const bAge = parseInt(bText);
+            return aAge - bAge;
+        } else {
+            return aText.localeCompare(bText, 'fa');
+        }
+    });
+    
+    // Re-append sorted rows with animation
+    rows.forEach((row, index) => {
+        setTimeout(() => {
+            tbody.appendChild(row);
+        }, index * 10);
+    });
+    
+    // Re-initialize Lucide icons
+    lucide.createIcons();
+}
+
+// Initialize search on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add search results counter
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        const searchContainer = searchInput.parentElement;
+        const resultsCounter = document.createElement('div');
+        resultsCounter.id = 'searchResults';
+        resultsCounter.className = 'text-sm text-gray-500 mt-2';
+        searchContainer.appendChild(resultsCounter);
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

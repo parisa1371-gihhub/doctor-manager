@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ patient.full_name }} - جزئیات بیمار{% endblock %}
+{% block page_title %}{{ patient.full_name }}{% endblock %}
+{% block page_subtitle %}جزئیات بیمار و سوابق پزشکی{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Patient Header Card -->
+    <div class="bg-gradient-to-r from-medical-500 to-medical-600 rounded-2xl p-8 text-white">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex items-center space-x-4 space-x-reverse mb-6 lg:mb-0">
+                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i data-lucide="user" class="w-10 h-10 text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold mb-2">{{ patient.full_name }}</h2>
+                    <div class="flex flex-wrap items-center gap-6 text-medical-100">
+                        <span class="flex items-center">
+                            <i data-lucide="id-card" class="w-5 h-5 ml-2"></i>
+                            کد ملی: {{ patient.national_id }}
+                        </span>
+                        <span class="flex items-center">
+                            <i data-lucide="calendar" class="w-5 h-5 ml-2"></i>
+                            سن: {{ patient.age }} سال
+                        </span>
+                        <span class="flex items-center">
+                            <i data-lucide="phone" class="w-5 h-5 ml-2"></i>
+                            {{ patient.phone }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{% url 'add_visit' patient.id %}" class="btn-success bg-white text-medical-600 hover:bg-gray-100">
+                    <i data-lucide="plus" class="w-5 h-5 ml-2"></i>
+                    افزودن ویزیت جدید
+                </a>
+                <a href="{% url 'patients' %}" class="btn-secondary bg-white bg-opacity-20 text-white border-white hover:bg-opacity-30">
+                    <i data-lucide="arrow-left" class="w-5 h-5 ml-2"></i>
+                    بازگشت به لیست
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Patient Information Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Personal Information -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <div class="w-8 h-8 bg-medical-100 rounded-lg flex items-center justify-center ml-3">
+                        <i data-lucide="user" class="w-5 h-5 text-medical-600"></i>
+                    </div>
+                    اطلاعات شخصی
+                </h3>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="user" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        نام کامل:
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ patient.full_name }}</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="id-card" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        کد ملی:
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ patient.national_id }}</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        تاریخ تولد:
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ patient.birth_date|date:"d M Y" }}</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="clock" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        سن:
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ patient.age }} سال</span>
+                </div>
+                <div class="flex justify-between items-center py-2">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="users" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        جنسیت:
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ patient.get_gender_display }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Information -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center ml-3">
+                        <i data-lucide="phone" class="w-5 h-5 text-green-600"></i>
+                    </div>
+                    اطلاعات تماس
+                </h3>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="phone" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        تلفن:
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ patient.phone }}</span>
+                </div>
+                <div class="flex flex-col py-2">
+                    <span class="text-gray-600 flex items-center mb-2">
+                        <i data-lucide="map-pin" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        آدرس:
+                    </span>
+                    <span class="font-semibold text-gray-900 text-right leading-relaxed">{{ patient.address }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Visit Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center ml-3">
+                        <i data-lucide="activity" class="w-5 h-5 text-purple-600"></i>
+                    </div>
+                    آمار ویزیت‌ها
+                </h3>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        کل ویزیت‌ها:
+                    </span>
+                    <span class="badge badge-success">{{ patient.visits.count }}</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="calendar-plus" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        اولین ویزیت:
+                    </span>
+                    <span class="font-semibold text-gray-900">
+                        {% if patient.visits.last %}
+                            {{ patient.visits.last.visit_date|date:"d M Y" }}
+                        {% else %}
+                            <span class="text-gray-400">هنوز ویزیتی نداشته</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="clock" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        آخرین ویزیت:
+                    </span>
+                    <span class="font-semibold text-gray-900">
+                        {% if patient.visits.first %}
+                            {{ patient.visits.first.visit_date|date:"d M Y" }}
+                        {% else %}
+                            <span class="text-gray-400">هنوز ویزیتی نداشته</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center py-2">
+                    <span class="text-gray-600 flex items-center">
+                        <i data-lucide="user-plus" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        عضو از:
+                    </span>
+                    <span class="font-semibold text-gray-900">{{ patient.created_at|date:"d M Y" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Medical History -->
+    <div class="card">
+        <div class="card-header">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center ml-3">
+                        <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    سوابق پزشکی
+                </h3>
+                <a href="{% url 'add_visit' patient.id %}" class="btn-primary">
+                    <i data-lucide="plus" class="w-5 h-5 ml-2"></i>
+                    افزودن ویزیت جدید
+                </a>
+            </div>
+        </div>
+        
+        {% if patient.visits.all %}
+            <div class="space-y-6">
+                {% for visit in patient.visits.all %}
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200 hover:shadow-md transition-all duration-200">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-4 space-x-reverse mb-4">
+                                <span class="badge badge-info">
+                                    ویزیت شماره {{ forloop.revcounter }}
+                                </span>
+                                <span class="text-sm text-gray-600 flex items-center">
+                                    <i data-lucide="calendar" class="w-4 h-4 ml-2"></i>
+                                    {{ visit.visit_date|date:"d M Y - H:i" }}
+                                </span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i data-lucide="stethoscope" class="w-4 h-4 ml-2 text-medical-600"></i>
+                                        تشخیص
+                                    </h4>
+                                    <p class="text-gray-700 leading-relaxed">{{ visit.diagnosis }}</p>
+                                </div>
+                                
+                                {% if visit.prescription %}
+                                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i data-lucide="pill" class="w-4 h-4 ml-2 text-green-600"></i>
+                                        نسخه
+                                    </h4>
+                                    <p class="text-gray-700 leading-relaxed">{{ visit.prescription }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if visit.notes %}
+                            <div class="mt-4 bg-white rounded-lg p-4 border border-gray-200">
+                                <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <i data-lucide="file-text" class="w-4 h-4 ml-2 text-yellow-600"></i>
+                                    یادداشت‌ها
+                                </h4>
+                                <p class="text-gray-700 leading-relaxed">{{ visit.notes }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if visit.next_visit_date %}
+                            <div class="mt-4 bg-gradient-to-r from-medical-50 to-medical-100 rounded-lg p-4 border border-medical-200">
+                                <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
+                                    <i data-lucide="calendar-plus" class="w-4 h-4 ml-2 text-medical-600"></i>
+                                    ویزیت بعدی
+                                </h4>
+                                <p class="text-medical-700 font-medium">{{ visit.next_visit_date|date:"d M Y" }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="ml-4 flex flex-col space-y-2">
+                            <button onclick="toggleVisitDetails({{ visit.id }})" 
+                                    class="p-2 text-gray-400 hover:text-medical-600 hover:bg-white rounded-lg transition-all duration-200">
+                                <i data-lucide="chevron-down" class="w-5 h-5" id="chevron-{{ visit.id }}"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Expandable Details -->
+                    <div id="visit-details-{{ visit.id }}" class="hidden mt-6 pt-6 border-t border-gray-200">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white rounded-lg p-4 border border-gray-200">
+                                <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <i data-lucide="stethoscope" class="w-4 h-4 ml-2 text-medical-600"></i>
+                                    تشخیص کامل
+                                </h5>
+                                <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">{{ visit.diagnosis }}</p>
+                            </div>
+                            
+                            {% if visit.prescription %}
+                            <div class="bg-white rounded-lg p-4 border border-gray-200">
+                                <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <i data-lucide="pill" class="w-4 h-4 ml-2 text-green-600"></i>
+                                    نسخه کامل
+                                </h5>
+                                <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">{{ visit.prescription }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if visit.notes %}
+                        <div class="mt-6 bg-white rounded-lg p-4 border border-gray-200">
+                            <h5 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                <i data-lucide="file-text" class="w-4 h-4 ml-2 text-yellow-600"></i>
+                                یادداشت‌های اضافی
+                            </h5>
+                            <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">{{ visit.notes }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="file-text" class="w-12 h-12 text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">هیچ سابقه پزشکی یافت نشد</h3>
+                <p class="text-gray-500 mb-8 max-w-md mx-auto">این بیمار هنوز ویزیتی نداشته است. اولین ویزیت را اضافه کنید.</p>
+                <a href="{% url 'add_visit' patient.id %}" class="btn-primary inline-flex items-center">
+                    <i data-lucide="plus" class="w-5 h-5 ml-2"></i>
+                    افزودن اولین ویزیت
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function toggleVisitDetails(visitId) {
+    const detailsElement = document.getElementById(`visit-details-${visitId}`);
+    const chevronElement = document.getElementById(`chevron-${visitId}`);
+    
+    if (detailsElement.classList.contains('hidden')) {
+        detailsElement.classList.remove('hidden');
+        chevronElement.setAttribute('data-lucide', 'chevron-up');
+    } else {
+        detailsElement.classList.add('hidden');
+        chevronElement.setAttribute('data-lucide', 'chevron-down');
+    }
+    
+    // Re-initialize Lucide icons
+    lucide.createIcons();
+}
+</script>
+{% endblock %}
+{% endblock %}
+

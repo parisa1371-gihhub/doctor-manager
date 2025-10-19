@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}افزودن ویزیت - {{ patient.full_name }} - سیستم مدیریت بیماران{% endblock %}
+{% block page_title %}افزودن ویزیت جدید{% endblock %}
+{% block page_subtitle %}ثبت ویزیت جدید برای {{ patient.full_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Patient Info Card -->
+    <div class="bg-gradient-to-r from-medical-500 to-medical-600 rounded-2xl p-6 text-white mb-8">
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <i data-lucide="user" class="w-8 h-8 text-white"></i>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-2">{{ patient.full_name }}</h3>
+                <div class="flex flex-wrap items-center gap-6 text-medical-100">
+                    <span class="flex items-center">
+                        <i data-lucide="id-card" class="w-4 h-4 ml-2"></i>
+                        کد ملی: {{ patient.national_id }}
+                    </span>
+                    <span class="flex items-center">
+                        <i data-lucide="calendar" class="w-4 h-4 ml-2"></i>
+                        سن: {{ patient.age }} سال
+                    </span>
+                    <span class="flex items-center">
+                        <i data-lucide="phone" class="w-4 h-4 ml-2"></i>
+                        {{ patient.phone }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Visit Form -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                <i data-lucide="stethoscope" class="w-6 h-6 ml-2 text-medical-600"></i>
+                ثبت ویزیت جدید
+            </h3>
+            <p class="text-gray-600 mt-2">لطفاً اطلاعات ویزیت را با دقت وارد کنید</p>
+        </div>
+
+        <form method="post" class="space-y-8" id="visitForm">
+            {% csrf_token %}
+            
+            <!-- Visit Date Info -->
+            <div class="bg-gradient-to-r from-medical-50 to-medical-100 border border-medical-200 rounded-xl p-6">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-medical-600 rounded-lg flex items-center justify-center ml-3">
+                        <i data-lucide="info" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">تاریخ ویزیت</h4>
+                        <p class="text-sm text-gray-600 mt-1">این ویزیت با تاریخ و زمان فعلی ثبت خواهد شد</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Diagnosis Section -->
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center ml-3">
+                        <i data-lucide="stethoscope" class="w-5 h-5 text-white"></i>
+                    </div>
+                    تشخیص و درمان
+                </h3>
+                
+                <div class="space-y-6">
+                    <!-- Diagnosis -->
+                    <div class="form-group">
+                        <label for="{{ form.diagnosis.id_for_label }}" class="form-label">
+                            <i data-lucide="stethoscope" class="w-4 h-4 ml-2 text-blue-600"></i>
+                            تشخیص *
+                        </label>
+                        {{ form.diagnosis }}
+                        {% if form.diagnosis.errors %}
+                            <div class="mt-2 text-sm text-red-600 flex items-center">
+                                <i data-lucide="alert-circle" class="w-4 h-4 ml-1"></i>
+                                {% for error in form.diagnosis.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <i data-lucide="info" class="w-4 h-4 ml-1"></i>
+                            وضعیت بیمار، علائم و یافته‌ها را شرح دهید
+                        </p>
+                    </div>
+                    
+                    <!-- Prescription -->
+                    <div class="form-group">
+                        <label for="{{ form.prescription.id_for_label }}" class="form-label">
+                            <i data-lucide="pill" class="w-4 h-4 ml-2 text-green-600"></i>
+                            نسخه
+                        </label>
+                        {{ form.prescription }}
+                        {% if form.prescription.errors %}
+                            <div class="mt-2 text-sm text-red-600 flex items-center">
+                                <i data-lucide="alert-circle" class="w-4 h-4 ml-1"></i>
+                                {% for error in form.prescription.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <i data-lucide="info" class="w-4 h-4 ml-1"></i>
+                            داروها، دوزها و دستورالعمل‌ها را لیست کنید
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Information Section -->
+            <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-6 border border-yellow-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+                    <div class="w-8 h-8 bg-yellow-600 rounded-lg flex items-center justify-center ml-3">
+                        <i data-lucide="file-text" class="w-5 h-5 text-white"></i>
+                    </div>
+                    اطلاعات اضافی
+                </h3>
+                
+                <div class="space-y-6">
+                    <!-- Notes -->
+                    <div class="form-group">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">
+                            <i data-lucide="file-text" class="w-4 h-4 ml-2 text-yellow-600"></i>
+                            یادداشت‌ها
+                        </label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="mt-2 text-sm text-red-600 flex items-center">
+                                <i data-lucide="alert-circle" class="w-4 h-4 ml-1"></i>
+                                {% for error in form.notes.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <i data-lucide="info" class="w-4 h-4 ml-1"></i>
+                            مشاهدات اضافی، توصیه‌ها یا دستورالعمل‌های پیگیری
+                        </p>
+                    </div>
+                    
+                    <!-- Next Visit Date -->
+                    <div class="form-group">
+                        <label for="{{ form.next_visit_date.id_for_label }}" class="form-label">
+                            <i data-lucide="calendar-plus" class="w-4 h-4 ml-2 text-purple-600"></i>
+                            تاریخ ویزیت بعدی
+                        </label>
+                        {{ form.next_visit_date }}
+                        {% if form.next_visit_date.errors %}
+                            <div class="mt-2 text-sm text-red-600 flex items-center">
+                                <i data-lucide="alert-circle" class="w-4 h-4 ml-1"></i>
+                                {% for error in form.next_visit_date.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                            <i data-lucide="info" class="w-4 h-4 ml-1"></i>
+                            در صورت نیاز، قرار ملاقات بعدی را تعیین کنید
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200">
+                <button type="submit" class="btn-primary flex-1 sm:flex-none">
+                    <i data-lucide="save" class="w-5 h-5 ml-2"></i>
+                    ذخیره ویزیت
+                </button>
+                
+                <a href="{% url 'patient_detail' patient.id %}" class="btn-secondary flex-1 sm:flex-none text-center">
+                    <i data-lucide="arrow-left" class="w-5 h-5 ml-2"></i>
+                    بازگشت به بیمار
+                </a>
+                
+                <a href="{% url 'patients' %}" class="btn-secondary flex-1 sm:flex-none text-center">
+                    <i data-lucide="users" class="w-5 h-5 ml-2"></i>
+                    همه بیماران
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Recent Visits for Reference -->
+    {% if patient.visits.all %}
+    <div class="card mt-8">
+        <div class="card-header">
+            <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center ml-3">
+                    <i data-lucide="history" class="w-5 h-5 text-gray-600"></i>
+                </div>
+                ویزیت‌های اخیر (برای مرجع)
+            </h3>
+        </div>
+        
+        <div class="space-y-4">
+            {% for visit in patient.visits.all|slice:":3" %}
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-4 hover:shadow-sm transition-shadow duration-200">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-semibold text-gray-800 flex items-center">
+                        <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
+                        {{ visit.visit_date|date:"d M Y - H:i" }}
+                    </span>
+                    <span class="badge badge-info">
+                        ویزیت شماره {{ forloop.revcounter }}
+                    </span>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-sm text-gray-700 leading-relaxed">{{ visit.diagnosis|truncatewords:25 }}</p>
+                    {% if visit.prescription %}
+                    <div class="bg-white rounded-lg p-3 border border-gray-200">
+                        <p class="text-sm text-gray-600">
+                            <span class="font-semibold text-gray-800">نسخه:</span> {{ visit.prescription|truncatewords:20 }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Style all form inputs
+    const inputs = document.querySelectorAll('input[type="text"], input[type="date"], textarea');
+    inputs.forEach(input => {
+        input.classList.add('form-input');
+    });
+    
+    // Auto-resize textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+        
+        // Set initial height
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    });
+    
+    // Form validation
+    const form = document.getElementById('visitForm');
+    form.addEventListener('submit', function(e) {
+        const diagnosisField = form.querySelector('textarea[name="diagnosis"]');
+        
+        if (!diagnosisField.value.trim()) {
+            e.preventDefault();
+            diagnosisField.classList.add('border-red-500');
+            diagnosisField.focus();
+            alert('لطفاً فیلد تشخیص را پر کنید');
+            return;
+        }
+        
+        diagnosisField.classList.remove('border-red-500');
+    });
+    
+    // Character counter for textareas
+    const textareasWithCounter = document.querySelectorAll('textarea');
+    textareasWithCounter.forEach(textarea => {
+        const maxLength = textarea.getAttribute('maxlength');
+        if (maxLength) {
+            const counter = document.createElement('div');
+            counter.className = 'text-xs text-gray-500 mt-1 text-left';
+            counter.textContent = `0/${maxLength} کاراکتر`;
+            
+            textarea.parentNode.appendChild(counter);
+            
+            textarea.addEventListener('input', function() {
+                const currentLength = this.value.length;
+                counter.textContent = `${currentLength}/${maxLength} کاراکتر`;
+                
+                if (currentLength > maxLength * 0.9) {
+                    counter.classList.add('text-red-500');
+                } else {
+                    counter.classList.remove('text-red-500');
+                }
+            });
+        }
+    });
+    
+    // Set minimum date for next visit to today
+    const nextVisitInput = document.querySelector('input[name="next_visit_date"]');
+    if (nextVisitInput) {
+        const today = new Date().toISOString().split('T')[0];
+        nextVisitInput.setAttribute('min', today);
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

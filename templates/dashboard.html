@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}داشبورد - سیستم مدیریت بیماران{% endblock %}
+{% block page_title %}داشبورد{% endblock %}
+{% block page_subtitle %}نمای کلی از مطب شما{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-medical-500 to-medical-600 rounded-2xl p-8 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">سلام، دکتر {{ user.get_full_name|default:user.username }}!</h1>
+                <p class="text-medical-100 text-lg">به سیستم مدیریت بیماران خوش آمدید</p>
+            </div>
+            <div class="hidden lg:block">
+                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i data-lucide="stethoscope" class="w-10 h-10 text-white"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="stat-card group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">کل بیماران</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ total_patients|default:"0" }}</p>
+                    <p class="text-xs text-green-600 mt-1">
+                        <i data-lucide="trending-up" class="w-3 h-3 inline ml-1"></i>
+                        +12% از ماه گذشته
+                    </p>
+                </div>
+                <div class="stat-card-icon bg-gradient-to-br from-blue-500 to-blue-600 text-white group-hover:scale-110 transition-transform duration-200">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">ویزیت‌های امروز</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ today_visits|default:"0" }}</p>
+                    <p class="text-xs text-blue-600 mt-1">
+                        <i data-lucide="calendar" class="w-3 h-3 inline ml-1"></i>
+                        {{ "امروز" }}
+                    </p>
+                </div>
+                <div class="stat-card-icon bg-gradient-to-br from-green-500 to-green-600 text-white group-hover:scale-110 transition-transform duration-200">
+                    <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">این هفته</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ week_visits|default:"0" }}</p>
+                    <p class="text-xs text-yellow-600 mt-1">
+                        <i data-lucide="clock" class="w-3 h-3 inline ml-1"></i>
+                        هفته جاری
+                    </p>
+                </div>
+                <div class="stat-card-icon bg-gradient-to-br from-yellow-500 to-yellow-600 text-white group-hover:scale-110 transition-transform duration-200">
+                    <i data-lucide="calendar" class="w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card group">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">این ماه</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ month_visits|default:"0" }}</p>
+                    <p class="text-xs text-purple-600 mt-1">
+                        <i data-lucide="trending-up" class="w-3 h-3 inline ml-1"></i>
+                        ماه جاری
+                    </p>
+                </div>
+                <div class="stat-card-icon bg-gradient-to-br from-purple-500 to-purple-600 text-white group-hover:scale-110 transition-transform duration-200">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions & Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Quick Actions Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                    <i data-lucide="zap" class="w-5 h-5 ml-2 text-medical-600"></i>
+                    اقدامات سریع
+                </h3>
+            </div>
+            <div class="space-y-4">
+                <a href="{% url 'add_patient' %}" class="group flex items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl transition-all duration-200 border border-blue-200">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                        <i data-lucide="user-plus" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="font-semibold text-gray-800">افزودن بیمار جدید</p>
+                        <p class="text-sm text-gray-600">ثبت اطلاعات بیمار جدید در سیستم</p>
+                    </div>
+                    <i data-lucide="arrow-left" class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"></i>
+                </a>
+                
+                <a href="{% url 'patients' %}" class="group flex items-center p-4 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-xl transition-all duration-200 border border-green-200">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                        <i data-lucide="users" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="font-semibold text-gray-800">مشاهده همه بیماران</p>
+                        <p class="text-sm text-gray-600">مرور و مدیریت پرونده بیماران</p>
+                    </div>
+                    <i data-lucide="arrow-left" class="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors"></i>
+                </a>
+                
+                <a href="#" class="group flex items-center p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200 rounded-xl transition-all duration-200 border border-yellow-200">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                        <i data-lucide="calendar-plus" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="font-semibold text-gray-800">تعیین قرار ملاقات</p>
+                        <p class="text-sm text-gray-600">رزرو قرار ملاقات جدید</p>
+                    </div>
+                    <i data-lucide="arrow-left" class="w-5 h-5 text-gray-400 group-hover:text-yellow-600 transition-colors"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Recent Visits Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                    <i data-lucide="clock" class="w-5 h-5 ml-2 text-medical-600"></i>
+                    ویزیت‌های اخیر
+                </h3>
+            </div>
+            {% if recent_visits %}
+                <div class="space-y-3">
+                    {% for visit in recent_visits %}
+                    <div class="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors duration-200 group">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-medical-100 to-medical-200 rounded-full flex items-center justify-center">
+                                <i data-lucide="user" class="w-6 h-6 text-medical-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="font-semibold text-gray-800">{{ visit.patient.full_name }}</p>
+                                <p class="text-sm text-gray-500 flex items-center">
+                                    <i data-lucide="calendar" class="w-3 h-3 ml-1"></i>
+                                    {{ visit.visit_date|date:"d M Y - H:i" }}
+                                </p>
+                            </div>
+                        </div>
+                        <a href="{% url 'patient_detail' visit.patient.id %}" class="p-2 text-gray-400 hover:text-medical-600 hover:bg-white rounded-lg transition-all duration-200">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <a href="{% url 'patients' %}" class="text-medical-600 hover:text-medical-700 text-sm font-medium flex items-center">
+                        مشاهده همه بیماران
+                        <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                    </a>
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="calendar-x" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 mb-4">هیچ ویزیت اخیری یافت نشد</p>
+                    <a href="{% url 'add_patient' %}" class="btn-primary">افزودن اولین بیمار</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Recent Patients Table -->
+    <div class="card">
+        <div class="card-header">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                    <i data-lucide="users" class="w-5 h-5 ml-2 text-medical-600"></i>
+                    بیماران اخیر
+                </h3>
+                <a href="{% url 'patients' %}" class="text-medical-600 hover:text-medical-700 text-sm font-medium flex items-center">
+                    مشاهده همه
+                    <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                </a>
+            </div>
+        </div>
+        
+        {% if recent_patients %}
+            <div class="table-container">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="table-cell font-semibold text-gray-700">بیمار</th>
+                                <th class="table-cell font-semibold text-gray-700">تلفن</th>
+                                <th class="table-cell font-semibold text-gray-700">سن</th>
+                                <th class="table-cell font-semibold text-gray-700">آخرین ویزیت</th>
+                                <th class="table-cell font-semibold text-gray-700">عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patient in recent_patients %}
+                            <tr class="table-row">
+                                <td class="table-cell">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-medical-100 to-medical-200 rounded-full flex items-center justify-center">
+                                            <i data-lucide="user" class="w-6 h-6 text-medical-600"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="font-semibold text-gray-900">{{ patient.full_name }}</div>
+                                            <div class="text-sm text-gray-500">کد ملی: {{ patient.national_id }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="table-cell">
+                                    <div class="flex items-center text-gray-900">
+                                        <i data-lucide="phone" class="w-4 h-4 ml-2 text-gray-400"></i>
+                                        {{ patient.phone }}
+                                    </div>
+                                </td>
+                                <td class="table-cell">
+                                    <span class="badge badge-info">{{ patient.age }} سال</span>
+                                </td>
+                                <td class="table-cell">
+                                    {% if patient.visits.first %}
+                                        <div class="flex items-center text-gray-900">
+                                            <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
+                                            {{ patient.visits.first.visit_date|date:"d M Y" }}
+                                        </div>
+                                    {% else %}
+                                        <span class="badge badge-warning">هنوز ویزیتی نداشته</span>
+                                    {% endif %}
+                                </td>
+                                <td class="table-cell">
+                                    <a href="{% url 'patient_detail' patient.id %}" class="btn-secondary text-sm">
+                                        <i data-lucide="eye" class="w-4 h-4 ml-1"></i>
+                                        مشاهده
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-16">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="users" class="w-10 h-10 text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">هیچ بیماری یافت نشد</h3>
+                <p class="text-gray-500 mb-6">برای شروع، اولین بیمار خود را اضافه کنید</p>
+                <a href="{% url 'add_patient' %}" class="btn-primary">
+                    <i data-lucide="user-plus" class="w-5 h-5 ml-2"></i>
+                    افزودن اولین بیمار
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

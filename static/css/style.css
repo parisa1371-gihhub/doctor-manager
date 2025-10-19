@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for the medical dashboard */
+@layer components {
+  .sidebar-link {
+    @apply flex items-center px-4 py-3 text-gray-700 hover:bg-medical-50 hover:text-medical-600 transition-all duration-200 rounded-lg mx-2 group;
+  }
+  
+  .sidebar-link.active {
+    @apply bg-medical-100 text-medical-600 font-medium shadow-sm;
+  }
+  
+  .sidebar-link:hover {
+    @apply transform translate-x-1;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+  }
+  
+  .card-header {
+    @apply border-b border-gray-200 pb-4 mb-4;
+  }
+  
+  .btn-primary {
+    @apply bg-medical-600 hover:bg-medical-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-6 rounded-lg transition-all duration-200 border border-gray-300;
+  }
+  
+  .btn-success {
+    @apply bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  .form-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 bg-white;
+  }
+  
+  .form-input:focus {
+    @apply shadow-sm;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+  }
+  
+  .form-group {
+    @apply mb-6;
+  }
+  
+  .stat-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200;
+  }
+  
+  .stat-card-icon {
+    @apply w-12 h-12 rounded-lg flex items-center justify-center;
+  }
+  
+  .table-container {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden;
+  }
+  
+  .table-header {
+    @apply bg-gray-50 px-6 py-4 border-b border-gray-200;
+  }
+  
+  .table-row {
+    @apply border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150;
+  }
+  
+  .table-cell {
+    @apply px-6 py-4 text-sm text-gray-900;
+  }
+  
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .badge-danger {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .badge-info {
+    @apply bg-blue-100 text-blue-800;
+  }
+  
+  .alert {
+    @apply px-4 py-3 rounded-lg border flex items-center;
+  }
+  
+  .alert-success {
+    @apply bg-green-50 border-green-200 text-green-800;
+  }
+  
+  .alert-error {
+    @apply bg-red-50 border-red-200 text-red-800;
+  }
+  
+  .alert-warning {
+    @apply bg-yellow-50 border-yellow-200 text-yellow-800;
+  }
+  
+  .alert-info {
+    @apply bg-blue-50 border-blue-200 text-blue-800;
+  }
+}
+
+/* Persian font support */
+body {
+  font-family: 'Vazir', 'Tahoma', sans-serif;
+  direction: rtl;
+}
+
+/* Fix text alignment for Persian content */
+th, td {
+  text-align: right;
+}
+
+/* Fix form input text direction */
+.form-input {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Fix textarea direction */
+textarea {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .card {
+    @apply p-4;
+  }
+  
+  .table-container {
+    @apply overflow-x-auto;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+    @apply py-2 px-4 text-sm;
+  }
+}
+
+/* Print styles */
+@media print {
+  .sidebar, .navbar, .btn {
+    display: none !important;
+  }
+  
+  .main-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
