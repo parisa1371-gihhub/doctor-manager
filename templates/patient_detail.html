@@ -333,6 +333,14 @@ function toggleVisitDetails(visitId) {
     lucide.createIcons();
 }
 </script>
+
+<!-- Home Button at bottom -->
+<div style="margin-top: 32px; text-align: center;">
+    <a href="{% url 'dashboard' %}" class="inline-flex items-center px-6 py-3 bg-medical-600 text-white rounded-lg hover:bg-medical-700 transition-colors duration-200">
+        <i data-lucide="home" class="w-5 h-5 ml-2"></i>
+        بازگشت به خانه
+    </a>
+</div>
 {% endblock %}
 {% endblock %}
 
