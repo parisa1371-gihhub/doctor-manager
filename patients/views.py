@@ -135,3 +135,57 @@ def add_visit(request, patient_id):
     }
     
     return render(request, 'add_visit.html', context)
+
+
+def appointments_list(request):
+    """List all appointments (visits with next_visit_date)"""
+    # Get all visits that have a next visit date
+    appointments = Visit.objects.filter(
+        next_visit_date__isnull=False
+    ).exclude(
+        next_visit_date=''
+    ).select_related('patient').order_by('next_visit_date')
+    
+    # Count total appointments
+    total_appointments = appointments.count()
+    
+    # Get upcoming appointments (next 7 days)
+    from datetime import datetime, timedelta
+    today = datetime.now().date()
+    next_week = today + timedelta(days=7)
+    
+    # Convert Jalali dates to Gregorian for comparison
+    upcoming_appointments = []
+    for appointment in appointments:
+        try:
+            # Parse Jalali date
+            jalali_parts = appointment.next_visit_date.split('/')
+            if len(jalali_parts) == 3:
+                jalali_year = int(jalali_parts[0])
+                jalali_month = int(jalali_parts[1])
+                jalali_day = int(jalali_parts[2])
+                
+                # Convert to Gregorian using jdatetime
+                try:
+                    import jdatetime
+                    jalali_date = jdatetime.date(jalali_year, jalali_month, jalali_day)
+                    gregorian_date = jalali_date.togregorian()
+                except:
+                    # Fallback: simple approximation
+                    gregorian_date = today
+                
+                if today <= gregorian_date <= next_week:
+                    upcoming_appointments.append({
+                        'visit': appointment,
+                        'gregorian_date': gregorian_date
+                    })
+        except:
+            continue
+    
+    context = {
+        'appointments': appointments,
+        'total_appointments': total_appointments,
+        'upcoming_appointments': upcoming_appointments,
+    }
+    
+    return render(request, 'appointments.html', context)

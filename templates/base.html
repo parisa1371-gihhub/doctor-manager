@@ -54,7 +54,7 @@
     
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div id="sidebar" class="fixed lg:static inset-y-0 right-0 z-50 w-64 bg-white shadow-xl lg:shadow-lg transform lg:translate-x-0 transition-transform duration-300 ease-in-out " style="display:none">
+        <div id="sidebar" class="fixed lg:static inset-y-0 right-0 z-50 w-64 bg-white shadow-xl lg:shadow-lg transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <!-- Sidebar Header -->
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center space-x-3 space-x-reverse">
@@ -86,7 +86,7 @@
                         <span>افزودن بیمار</span>
                     </a>
                     
-                    <a href="#" class="sidebar-link">
+                    <a href="{% url 'appointments' %}" class="sidebar-link {% if request.resolver_match.url_name == 'appointments' %}active{% endif %}">
                         <i data-lucide="calendar" class="w-5 h-5 ml-3"></i>
                         <span>قرار ملاقات‌ها</span>
                     </a>
@@ -121,7 +121,7 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden lg:mr-0 mr-0">
             <!-- Top Navbar -->
-            <header class="bg-white shadow-sm border-b border-gray-200" style="display:none">
+            <header class="bg-white shadow-sm border-b border-gray-200">
                 <div class="flex items-center justify-between px-4 lg:px-6 py-4">
                     <!-- Mobile Menu Button -->
                     <button id="mobile-menu-button" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100">
@@ -184,7 +184,7 @@
         const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
         
         function toggleMobileMenu() {
-            sidebar.classList.toggle('');
+            sidebar.classList.toggle('translate-x-full');
             mobileMenuOverlay.classList.toggle('hidden');
         }
         
@@ -194,7 +194,7 @@
         // Close mobile menu on window resize
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 1024) {
-                sidebar.classList.remove('');
+                sidebar.classList.remove('translate-x-full');
                 mobileMenuOverlay.classList.add('hidden');
             }
         });
