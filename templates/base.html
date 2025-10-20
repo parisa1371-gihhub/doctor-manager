@@ -12,18 +12,6 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        },
                         medical: {
                             50: '#f0f9ff',
                             100: '#e0f2fe',
@@ -54,15 +42,15 @@
     
     <!-- Additional Meta Tags -->
     <meta name="description" content="سیستم مدیریت بیماران پزشک - داشبورد حرفه‌ای برای مدیریت پرونده‌های پزشکی">
-    <meta name="theme-color" content="#3b82f6">
+    <meta name="theme-color" content="#0ea5e9">
 </head>
-<body class="bg-gray-50 font-vazir">
+<body class="bg-gray-50" style="font-family: 'Vazir', 'Tahoma', sans-serif;">
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
     
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div id="sidebar" class="fixed lg:static inset-y-0 right-0 z-50 w-64 bg-white shadow-xl lg:shadow-lg transform lg:translate-x-0 transition-transform duration-300 ease-in-out -translate-x-full">
+        <div id="sidebar" class="fixed lg:static inset-y-0 right-0 z-50 w-64 bg-white shadow-xl lg:shadow-lg transform lg:translate-x-0 transition-transform duration-300 ease-in-out " style="display:none">
             <!-- Sidebar Header -->
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center space-x-3 space-x-reverse">
@@ -129,7 +117,7 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden lg:mr-0 mr-0">
             <!-- Top Navbar -->
-            <header class="bg-white shadow-sm border-b border-gray-200">
+            <header class="bg-white shadow-sm border-b border-gray-200" style="display:none">
                 <div class="flex items-center justify-between px-4 lg:px-6 py-4">
                     <!-- Mobile Menu Button -->
                     <button id="mobile-menu-button" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100">
@@ -192,7 +180,7 @@
         const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
         
         function toggleMobileMenu() {
-            sidebar.classList.toggle('-translate-x-full');
+            sidebar.classList.toggle('');
             mobileMenuOverlay.classList.toggle('hidden');
         }
         
@@ -202,7 +190,7 @@
         // Close mobile menu on window resize
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 1024) {
-                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.remove('');
                 mobileMenuOverlay.classList.add('hidden');
             }
         });

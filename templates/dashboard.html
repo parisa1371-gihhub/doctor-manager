@@ -6,131 +6,131 @@
 {% block page_subtitle %}نمای کلی از مطب شما{% endblock %}
 
 {% block content %}
-<div class="space-y-8">
+<div style="padding: 24px;">
     <!-- Welcome Section -->
-    <div class="bg-gradient-to-r from-medical-500 to-medical-600 rounded-2xl p-8 text-white">
-        <div class="flex items-center justify-between">
+    <div style="background: linear-gradient(to right, #0284c7, #0369a1); border-radius: 16px; padding: 32px; color: white; margin-bottom: 32px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
             <div>
-                <h1 class="text-3xl font-bold mb-2">سلام، دکتر {{ user.get_full_name|default:user.username }}!</h1>
-                <p class="text-medical-100 text-lg">به سیستم مدیریت بیماران خوش آمدید</p>
+                <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 8px;">سلام، دکتر {{ user.get_full_name|default:user.username }}!</h1>
+                <p style="color: #bae6fd; font-size: 18px;">به سیستم مدیریت بیماران خوش آمدید</p>
             </div>
-            <div class="hidden lg:block">
-                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                    <i data-lucide="stethoscope" class="w-10 h-10 text-white"></i>
+            <div style="display: none;" class="lg:block">
+                <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="stethoscope" style="width: 40px; height: 40px; color: white;"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="stat-card group">
-            <div class="flex items-center justify-between">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
-                    <p class="text-sm font-medium text-gray-500 mb-1">کل بیماران</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ total_patients|default:"0" }}</p>
-                    <p class="text-xs text-green-600 mt-1">
-                        <i data-lucide="trending-up" class="w-3 h-3 inline ml-1"></i>
+                    <p style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">کل بیماران</p>
+                    <p style="font-size: 32px; font-weight: bold; color: #111827;">{{ total_patients|default:"0" }}</p>
+                    <p style="font-size: 12px; color: #059669; margin-top: 4px;">
+                        <i data-lucide="trending-up" style="width: 12px; height: 12px; display: inline; margin-left: 4px;"></i>
                         +12% از ماه گذشته
                     </p>
                 </div>
-                <div class="stat-card-icon bg-gradient-to-br from-blue-500 to-blue-600 text-white group-hover:scale-110 transition-transform duration-200">
-                    <i data-lucide="users" class="w-6 h-6"></i>
+                <div class="stat-card-icon" style="background: linear-gradient(to bottom right, #3b82f6, #2563eb); color: white;">
+                    <i data-lucide="users" style="width: 24px; height: 24px;"></i>
                 </div>
             </div>
         </div>
         
-        <div class="stat-card group">
-            <div class="flex items-center justify-between">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
-                    <p class="text-sm font-medium text-gray-500 mb-1">ویزیت‌های امروز</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ today_visits|default:"0" }}</p>
-                    <p class="text-xs text-blue-600 mt-1">
-                        <i data-lucide="calendar" class="w-3 h-3 inline ml-1"></i>
-                        {{ "امروز" }}
+                    <p style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">ویزیت‌های امروز</p>
+                    <p style="font-size: 32px; font-weight: bold; color: #111827;">{{ today_visits|default:"0" }}</p>
+                    <p style="font-size: 12px; color: #0284c7; margin-top: 4px;">
+                        <i data-lucide="calendar" style="width: 12px; height: 12px; display: inline; margin-left: 4px;"></i>
+                        امروز
                     </p>
                 </div>
-                <div class="stat-card-icon bg-gradient-to-br from-green-500 to-green-600 text-white group-hover:scale-110 transition-transform duration-200">
-                    <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                <div class="stat-card-icon" style="background: linear-gradient(to bottom right, #059669, #047857); color: white;">
+                    <i data-lucide="calendar-check" style="width: 24px; height: 24px;"></i>
                 </div>
             </div>
         </div>
         
-        <div class="stat-card group">
-            <div class="flex items-center justify-between">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
-                    <p class="text-sm font-medium text-gray-500 mb-1">این هفته</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ week_visits|default:"0" }}</p>
-                    <p class="text-xs text-yellow-600 mt-1">
-                        <i data-lucide="clock" class="w-3 h-3 inline ml-1"></i>
+                    <p style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">این هفته</p>
+                    <p style="font-size: 32px; font-weight: bold; color: #111827;">{{ week_visits|default:"0" }}</p>
+                    <p style="font-size: 12px; color: #d97706; margin-top: 4px;">
+                        <i data-lucide="clock" style="width: 12px; height: 12px; display: inline; margin-left: 4px;"></i>
                         هفته جاری
                     </p>
                 </div>
-                <div class="stat-card-icon bg-gradient-to-br from-yellow-500 to-yellow-600 text-white group-hover:scale-110 transition-transform duration-200">
-                    <i data-lucide="calendar" class="w-6 h-6"></i>
+                <div class="stat-card-icon" style="background: linear-gradient(to bottom right, #d97706, #b45309); color: white;">
+                    <i data-lucide="calendar" style="width: 24px; height: 24px;"></i>
                 </div>
             </div>
         </div>
         
-        <div class="stat-card group">
-            <div class="flex items-center justify-between">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
-                    <p class="text-sm font-medium text-gray-500 mb-1">این ماه</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ month_visits|default:"0" }}</p>
-                    <p class="text-xs text-purple-600 mt-1">
-                        <i data-lucide="trending-up" class="w-3 h-3 inline ml-1"></i>
+                    <p style="font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px;">این ماه</p>
+                    <p style="font-size: 32px; font-weight: bold; color: #111827;">{{ month_visits|default:"0" }}</p>
+                    <p style="font-size: 12px; color: #7c3aed; margin-top: 4px;">
+                        <i data-lucide="trending-up" style="width: 12px; height: 12px; display: inline; margin-left: 4px;"></i>
                         ماه جاری
                     </p>
                 </div>
-                <div class="stat-card-icon bg-gradient-to-br from-purple-500 to-purple-600 text-white group-hover:scale-110 transition-transform duration-200">
-                    <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                <div class="stat-card-icon" style="background: linear-gradient(to bottom right, #7c3aed, #6d28d9); color: white;">
+                    <i data-lucide="bar-chart-3" style="width: 24px; height: 24px;"></i>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- Quick Actions & Recent Activity -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 32px; margin-bottom: 32px;">
         <!-- Quick Actions Card -->
         <div class="card">
             <div class="card-header">
-                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <i data-lucide="zap" class="w-5 h-5 ml-2 text-medical-600"></i>
+                <h3 style="font-size: 20px; font-weight: 600; color: #111827; display: flex; align-items: center;">
+                    <i data-lucide="zap" style="width: 20px; height: 20px; margin-left: 8px; color: #0284c7;"></i>
                     اقدامات سریع
                 </h3>
             </div>
-            <div class="space-y-4">
-                <a href="{% url 'add_patient' %}" class="group flex items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl transition-all duration-200 border border-blue-200">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="user-plus" class="w-6 h-6 text-white"></i>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <a href="{% url 'add_patient' %}" style="display: flex; align-items: center; padding: 16px; background: linear-gradient(to right, #dbeafe, #bfdbfe); border-radius: 12px; border: 1px solid #93c5fd; text-decoration: none; transition: all 0.2s;">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(to bottom right, #3b82f6, #2563eb); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="user-plus" style="width: 24px; height: 24px; color: white;"></i>
                     </div>
-                    <div class="ml-4 flex-1">
-                        <p class="font-semibold text-gray-800">افزودن بیمار جدید</p>
-                        <p class="text-sm text-gray-600">ثبت اطلاعات بیمار جدید در سیستم</p>
+                    <div style="margin-left: 16px; flex: 1;">
+                        <p style="font-weight: 600; color: #111827; margin: 0;">افزودن بیمار جدید</p>
+                        <p style="font-size: 14px; color: #6b7280; margin: 0;">ثبت اطلاعات بیمار جدید در سیستم</p>
                     </div>
-                    <i data-lucide="arrow-left" class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors"></i>
+                    <i data-lucide="arrow-left" style="width: 20px; height: 20px; color: #9ca3af;"></i>
                 </a>
                 
-                <a href="{% url 'patients' %}" class="group flex items-center p-4 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-xl transition-all duration-200 border border-green-200">
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="users" class="w-6 h-6 text-white"></i>
+                <a href="{% url 'patients' %}" style="display: flex; align-items: center; padding: 16px; background: linear-gradient(to right, #dcfce7, #bbf7d0); border-radius: 12px; border: 1px solid #86efac; text-decoration: none; transition: all 0.2s;">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(to bottom right, #059669, #047857); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="users" style="width: 24px; height: 24px; color: white;"></i>
                     </div>
-                    <div class="ml-4 flex-1">
-                        <p class="font-semibold text-gray-800">مشاهده همه بیماران</p>
-                        <p class="text-sm text-gray-600">مرور و مدیریت پرونده بیماران</p>
+                    <div style="margin-left: 16px; flex: 1;">
+                        <p style="font-weight: 600; color: #111827; margin: 0;">مشاهده همه بیماران</p>
+                        <p style="font-size: 14px; color: #6b7280; margin: 0;">مرور و مدیریت پرونده بیماران</p>
                     </div>
-                    <i data-lucide="arrow-left" class="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors"></i>
+                    <i data-lucide="arrow-left" style="width: 20px; height: 20px; color: #9ca3af;"></i>
                 </a>
                 
-                <a href="#" class="group flex items-center p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200 rounded-xl transition-all duration-200 border border-yellow-200">
-                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                        <i data-lucide="calendar-plus" class="w-6 h-6 text-white"></i>
+                <a href="#" style="display: flex; align-items: center; padding: 16px; background: linear-gradient(to right, #fef3c7, #fde68a); border-radius: 12px; border: 1px solid #fbbf24; text-decoration: none; transition: all 0.2s;">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(to bottom right, #d97706, #b45309); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="calendar-plus" style="width: 24px; height: 24px; color: white;"></i>
                     </div>
-                    <div class="ml-4 flex-1">
-                        <p class="font-semibold text-gray-800">تعیین قرار ملاقات</p>
-                        <p class="text-sm text-gray-600">رزرو قرار ملاقات جدید</p>
+                    <div style="margin-left: 16px; flex: 1;">
+                        <p style="font-weight: 600; color: #111827; margin: 0;">تعیین قرار ملاقات</p>
+                        <p style="font-size: 14px; color: #6b7280; margin: 0;">رزرو قرار ملاقات جدید</p>
                     </div>
-                    <i data-lucide="arrow-left" class="w-5 h-5 text-gray-400 group-hover:text-yellow-600 transition-colors"></i>
+                    <i data-lucide="arrow-left" style="width: 20px; height: 20px; color: #9ca3af;"></i>
                 </a>
             </div>
         </div>
@@ -138,45 +138,45 @@
         <!-- Recent Visits Card -->
         <div class="card">
             <div class="card-header">
-                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <i data-lucide="clock" class="w-5 h-5 ml-2 text-medical-600"></i>
+                <h3 style="font-size: 20px; font-weight: 600; color: #111827; display: flex; align-items: center;">
+                    <i data-lucide="clock" style="width: 20px; height: 20px; margin-left: 8px; color: #0284c7;"></i>
                     ویزیت‌های اخیر
                 </h3>
             </div>
             {% if recent_visits %}
-                <div class="space-y-3">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
                     {% for visit in recent_visits %}
-                    <div class="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors duration-200 group">
-                        <div class="flex items-center">
-                            <div class="w-12 h-12 bg-gradient-to-br from-medical-100 to-medical-200 rounded-full flex items-center justify-center">
-                                <i data-lucide="user" class="w-6 h-6 text-medical-600"></i>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #f9fafb; border-radius: 12px; transition: background-color 0.2s;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(to bottom right, #e0f2fe, #bae6fd); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="user" style="width: 24px; height: 24px; color: #0284c7;"></i>
                             </div>
-                            <div class="ml-4">
-                                <p class="font-semibold text-gray-800">{{ visit.patient.full_name }}</p>
-                                <p class="text-sm text-gray-500 flex items-center">
-                                    <i data-lucide="calendar" class="w-3 h-3 ml-1"></i>
+                            <div style="margin-left: 16px;">
+                                <p style="font-weight: 600; color: #111827; margin: 0;">{{ visit.patient.full_name }}</p>
+                                <p style="font-size: 14px; color: #6b7280; margin: 0; display: flex; align-items: center;">
+                                    <i data-lucide="calendar" style="width: 12px; height: 12px; margin-left: 4px;"></i>
                                     {{ visit.visit_date|date:"d M Y - H:i" }}
                                 </p>
                             </div>
                         </div>
-                        <a href="{% url 'patient_detail' visit.patient.id %}" class="p-2 text-gray-400 hover:text-medical-600 hover:bg-white rounded-lg transition-all duration-200">
-                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        <a href="{% url 'patient_detail' visit.patient.id %}" style="padding: 8px; color: #9ca3af; border-radius: 8px; transition: all 0.2s;">
+                            <i data-lucide="eye" style="width: 20px; height: 20px;"></i>
                         </a>
                     </div>
                     {% endfor %}
                 </div>
-                <div class="mt-6 pt-4 border-t border-gray-200">
-                    <a href="{% url 'patients' %}" class="text-medical-600 hover:text-medical-700 text-sm font-medium flex items-center">
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                    <a href="{% url 'patients' %}" style="color: #0284c7; font-size: 14px; font-weight: 500; text-decoration: none; display: flex; align-items: center;">
                         مشاهده همه بیماران
-                        <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                        <i data-lucide="arrow-left" style="width: 16px; height: 16px; margin-right: 4px;"></i>
                     </a>
                 </div>
             {% else %}
-                <div class="text-center py-12">
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i data-lucide="calendar-x" class="w-8 h-8 text-gray-400"></i>
+                <div style="text-align: center; padding: 48px 0;">
+                    <div style="width: 64px; height: 64px; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                        <i data-lucide="calendar-x" style="width: 32px; height: 32px; color: #9ca3af;"></i>
                     </div>
-                    <p class="text-gray-500 mb-4">هیچ ویزیت اخیری یافت نشد</p>
+                    <p style="color: #6b7280; margin-bottom: 16px;">هیچ ویزیت اخیری یافت نشد</p>
                     <a href="{% url 'add_patient' %}" class="btn-primary">افزودن اولین بیمار</a>
                 </div>
             {% endif %}
@@ -186,48 +186,48 @@
     <!-- Recent Patients Table -->
     <div class="card">
         <div class="card-header">
-            <div class="flex items-center justify-between">
-                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <i data-lucide="users" class="w-5 h-5 ml-2 text-medical-600"></i>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 20px; font-weight: 600; color: #111827; display: flex; align-items: center;">
+                    <i data-lucide="users" style="width: 20px; height: 20px; margin-left: 8px; color: #0284c7;"></i>
                     بیماران اخیر
                 </h3>
-                <a href="{% url 'patients' %}" class="text-medical-600 hover:text-medical-700 text-sm font-medium flex items-center">
+                <a href="{% url 'patients' %}" style="color: #0284c7; font-size: 14px; font-weight: 500; text-decoration: none; display: flex; align-items: center;">
                     مشاهده همه
-                    <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                    <i data-lucide="arrow-left" style="width: 16px; height: 16px; margin-right: 4px;"></i>
                 </a>
             </div>
         </div>
         
         {% if recent_patients %}
             <div class="table-container">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full">
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%;">
                         <thead class="table-header">
                             <tr>
-                                <th class="table-cell font-semibold text-gray-700">بیمار</th>
-                                <th class="table-cell font-semibold text-gray-700">تلفن</th>
-                                <th class="table-cell font-semibold text-gray-700">سن</th>
-                                <th class="table-cell font-semibold text-gray-700">آخرین ویزیت</th>
-                                <th class="table-cell font-semibold text-gray-700">عملیات</th>
+                                <th class="table-cell" style="font-weight: 600; color: #374151;">بیمار</th>
+                                <th class="table-cell" style="font-weight: 600; color: #374151;">تلفن</th>
+                                <th class="table-cell" style="font-weight: 600; color: #374151;">سن</th>
+                                <th class="table-cell" style="font-weight: 600; color: #374151;">آخرین ویزیت</th>
+                                <th class="table-cell" style="font-weight: 600; color: #374151;">عملیات</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for patient in recent_patients %}
                             <tr class="table-row">
                                 <td class="table-cell">
-                                    <div class="flex items-center">
-                                        <div class="w-12 h-12 bg-gradient-to-br from-medical-100 to-medical-200 rounded-full flex items-center justify-center">
-                                            <i data-lucide="user" class="w-6 h-6 text-medical-600"></i>
+                                    <div style="display: flex; align-items: center;">
+                                        <div style="width: 48px; height: 48px; background: linear-gradient(to bottom right, #e0f2fe, #bae6fd); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                            <i data-lucide="user" style="width: 24px; height: 24px; color: #0284c7;"></i>
                                         </div>
-                                        <div class="ml-4">
-                                            <div class="font-semibold text-gray-900">{{ patient.full_name }}</div>
-                                            <div class="text-sm text-gray-500">کد ملی: {{ patient.national_id }}</div>
+                                        <div style="margin-left: 16px;">
+                                            <div style="font-weight: 600; color: #111827;">{{ patient.full_name }}</div>
+                                            <div style="font-size: 14px; color: #6b7280;">کد ملی: {{ patient.national_id }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="table-cell">
-                                    <div class="flex items-center text-gray-900">
-                                        <i data-lucide="phone" class="w-4 h-4 ml-2 text-gray-400"></i>
+                                    <div style="display: flex; align-items: center; color: #111827;">
+                                        <i data-lucide="phone" style="width: 16px; height: 16px; margin-left: 8px; color: #9ca3af;"></i>
                                         {{ patient.phone }}
                                     </div>
                                 </td>
@@ -236,8 +236,8 @@
                                 </td>
                                 <td class="table-cell">
                                     {% if patient.visits.first %}
-                                        <div class="flex items-center text-gray-900">
-                                            <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
+                                        <div style="display: flex; align-items: center; color: #111827;">
+                                            <i data-lucide="calendar" style="width: 16px; height: 16px; margin-left: 8px; color: #9ca3af;"></i>
                                             {{ patient.visits.first.visit_date|date:"d M Y" }}
                                         </div>
                                     {% else %}
@@ -245,8 +245,8 @@
                                     {% endif %}
                                 </td>
                                 <td class="table-cell">
-                                    <a href="{% url 'patient_detail' patient.id %}" class="btn-secondary text-sm">
-                                        <i data-lucide="eye" class="w-4 h-4 ml-1"></i>
+                                    <a href="{% url 'patient_detail' patient.id %}" class="btn-secondary" style="font-size: 14px;">
+                                        <i data-lucide="eye" style="width: 16px; height: 16px; margin-left: 4px;"></i>
                                         مشاهده
                                     </a>
                                 </td>
@@ -257,14 +257,14 @@
                 </div>
             </div>
         {% else %}
-            <div class="text-center py-16">
-                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="users" class="w-10 h-10 text-gray-400"></i>
+            <div style="text-align: center; padding: 64px 0;">
+                <div style="width: 80px; height: 80px; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                    <i data-lucide="users" style="width: 40px; height: 40px; color: #9ca3af;"></i>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">هیچ بیماری یافت نشد</h3>
-                <p class="text-gray-500 mb-6">برای شروع، اولین بیمار خود را اضافه کنید</p>
+                <h3 style="font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 8px;">هیچ بیماری یافت نشد</h3>
+                <p style="color: #6b7280; margin-bottom: 24px;">برای شروع، اولین بیمار خود را اضافه کنید</p>
                 <a href="{% url 'add_patient' %}" class="btn-primary">
-                    <i data-lucide="user-plus" class="w-5 h-5 ml-2"></i>
+                    <i data-lucide="user-plus" style="width: 20px; height: 20px; margin-left: 8px;"></i>
                     افزودن اولین بیمار
                 </a>
             </div>
