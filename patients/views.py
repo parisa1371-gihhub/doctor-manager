@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -259,3 +262,92 @@ def create_appointment_notifications():
                         )
         except:
             continue
+
+
+def settings_page(request):
+    """Settings page for system configuration"""
+    context = {
+        'user': request.user,
+    }
+    return render(request, 'settings.html', context)
+
+
+def login_view(request):
+    """Login page for doctor"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        if username and password:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'خوش آمدید، دکتر {user.get_full_name() or user.username}!')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'نام کاربری یا رمز عبور اشتباه است.')
+        else:
+            messages.error(request, 'لطفاً همه فیلدها را پر کنید.')
+    
+    return render(request, 'login.html')
+
+
+def logout_view(request):
+    """Logout view"""
+    logout(request)
+    messages.success(request, 'با موفقیت از سیستم خارج شدید.')
+    return redirect('login')
+
+
+def register_view(request):
+    """Register page for new doctor"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Validation
+        if not all([username, email, first_name, last_name, password, confirm_password]):
+            messages.error(request, 'لطفاً همه فیلدها را پر کنید.')
+        elif password != confirm_password:
+            messages.error(request, 'رمز عبور و تأیید رمز عبور مطابقت ندارند.')
+        elif len(password) < 8:
+            messages.error(request, 'رمز عبور باید حداقل 8 کاراکتر باشد.')
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, 'نام کاربری قبلاً استفاده شده است.')
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, 'ایمیل قبلاً استفاده شده است.')
+        else:
+            try:
+                # Create user
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password,
+                    first_name=first_name,
+                    last_name=last_name,
+                    is_staff=True,
+                    is_superuser=True
+                )
+                
+                messages.success(request, f'حساب کاربری با موفقیت ایجاد شد! خوش آمدید، دکتر {first_name} {last_name}')
+                
+                # Auto login
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect('dashboard')
+                    
+            except Exception as e:
+                messages.error(request, f'خطا در ایجاد حساب کاربری: {str(e)}')
+    
+    return render(request, 'register.html')
