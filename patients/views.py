@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db.models import Count, Q
 from django.utils import timezone
 from datetime import datetime, timedelta
-from .models import Patient, Visit
+from .models import Patient, Visit, Notification
 from .forms import PatientForm, VisitForm
 
 
@@ -189,3 +189,73 @@ def appointments_list(request):
     }
     
     return render(request, 'appointments.html', context)
+
+
+def notifications_list(request):
+    """Display all notifications"""
+    notifications = Notification.objects.all().order_by('-created_at')
+    unread_count = Notification.objects.filter(is_read=False).count()
+    
+    context = {
+        'notifications': notifications,
+        'unread_count': unread_count,
+    }
+    
+    return render(request, 'notifications.html', context)
+
+
+def mark_notification_read(request, notification_id):
+    """Mark a notification as read"""
+    notification = get_object_or_404(Notification, id=notification_id)
+    notification.is_read = True
+    notification.save()
+    
+    return redirect('notifications')
+
+
+def create_appointment_notifications():
+    """Create notifications for upcoming appointments"""
+    from datetime import datetime, timedelta
+    import jdatetime
+    
+    today = datetime.now().date()
+    next_week = today + timedelta(days=7)
+    
+    # Get visits with next_visit_date in the next 7 days
+    visits = Visit.objects.filter(
+        next_visit_date__isnull=False
+    ).exclude(
+        next_visit_date=''
+    )
+    
+    for visit in visits:
+        try:
+            # Parse Jalali date
+            jalali_parts = visit.next_visit_date.split('/')
+            if len(jalali_parts) == 3:
+                jalali_year = int(jalali_parts[0])
+                jalali_month = int(jalali_parts[1])
+                jalali_day = int(jalali_parts[2])
+                
+                # Convert to Gregorian
+                jalali_date = jdatetime.date(jalali_year, jalali_month, jalali_day)
+                gregorian_date = jalali_date.togregorian()
+                
+                if today <= gregorian_date <= next_week:
+                    # Check if notification already exists
+                    existing_notification = Notification.objects.filter(
+                        related_visit=visit,
+                        notification_type='appointment',
+                        title__contains=visit.patient.full_name
+                    ).first()
+                    
+                    if not existing_notification:
+                        Notification.objects.create(
+                            title=f"قرار ملاقات نزدیک - {visit.patient.full_name}",
+                            message=f"قرار ملاقات با {visit.patient.full_name} در تاریخ {visit.next_visit_date} نزدیک است.",
+                            notification_type='appointment',
+                            related_patient=visit.patient,
+                            related_visit=visit
+                        )
+        except:
+            continue

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load jalali %}
+
+{% block title %}اعلان‌ها - سیستم مدیریت بیماران{% endblock %}
+{% block page_title %}اعلان‌ها{% endblock %}
+{% block page_subtitle %}مدیریت اعلان‌ها و هشدارها{% endblock %}
+
+{% block content %}
+<div style="padding: 2rem;">
+    <!-- Header Section -->
+    <div style="background: linear-gradient(to right, #f0f9ff, #e0f2fe); border-radius: 1rem; padding: 1.5rem; border: 1px solid #bae6fd; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h2 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 0.5rem;">اعلان‌ها</h2>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span style="display: flex; align-items: center; color: #0284c7;">
+                        <i data-lucide="bell" style="width: 1rem; height: 1rem; margin-left: 0.5rem;"></i>
+                        {{ notifications|length }} اعلان
+                    </span>
+                    {% if unread_count > 0 %}
+                    <span style="display: flex; align-items: center; color: #dc2626;">
+                        <i data-lucide="circle" style="width: 0.5rem; height: 0.5rem; margin-left: 0.5rem;"></i>
+                        {{ unread_count }} خوانده نشده
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div style="background: white; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        {% if notifications %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for notification in notifications %}
+            <div style="background: {% if notification.is_read %}#f9fafb{% else %}#fef3c7{% endif %}; border: 1px solid {% if notification.is_read %}#e5e7eb{% else %}#fbbf24{% endif %}; border-radius: 0.75rem; padding: 1rem; {% if not notification.is_read %}border-right: 4px solid #f59e0b;{% endif %}">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                            <div style="width: 2rem; height: 2rem; background: {% if notification.notification_type == 'appointment' %}#dcfce7{% elif notification.notification_type == 'reminder' %}#dbeafe{% elif notification.notification_type == 'visit' %}#e0f2fe{% else %}#f3f4f6{% endif %}; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                {% if notification.notification_type == 'appointment' %}
+                                    <i data-lucide="calendar" style="width: 1rem; height: 1rem; color: #16a34a;"></i>
+                                {% elif notification.notification_type == 'reminder' %}
+                                    <i data-lucide="clock" style="width: 1rem; height: 1rem; color: #2563eb;"></i>
+                                {% elif notification.notification_type == 'visit' %}
+                                    <i data-lucide="user" style="width: 1rem; height: 1rem; color: #0284c7;"></i>
+                                {% else %}
+                                    <i data-lucide="info" style="width: 1rem; height: 1rem; color: #6b7280;"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h4 style="font-weight: 600; color: #111827; margin: 0; font-size: 1rem;">{{ notification.title }}</h4>
+                                <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">{{ notification.created_at|jalali:"%Y/%m/%d %H:%M" }}</p>
+                            </div>
+                        </div>
+                        <p style="color: #374151; margin: 0; line-height: 1.5;">{{ notification.message }}</p>
+                        
+                        {% if notification.related_patient %}
+                        <div style="margin-top: 0.75rem;">
+                            <a href="{% url 'patient_detail' notification.related_patient.id %}" 
+                               style="background: #f1f5f9; color: #475569; padding: 0.375rem 0.75rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                <i data-lucide="user" style="width: 0.75rem; height: 0.75rem;"></i>
+                                مشاهده بیمار
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if not notification.is_read %}
+                    <div style="margin-right: 1rem;">
+                        <a href="{% url 'mark_notification_read' notification.id %}" 
+                           style="background: #0284c7; color: white; padding: 0.375rem 0.75rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.25rem;">
+                            <i data-lucide="check" style="width: 0.75rem; height: 0.75rem;"></i>
+                            خواندم
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 3rem 0;">
+            <div style="width: 4rem; height: 4rem; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <i data-lucide="bell-off" style="width: 2rem; height: 2rem; color: #9ca3af;"></i>
+            </div>
+            <h3 style="font-size: 1.125rem; font-weight: 500; color: #111827; margin-bottom: 0.5rem;">هیچ اعلانی وجود ندارد</h3>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">هنوز اعلان یا هشداری دریافت نکرده‌اید.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Lucide icons
+    lucide.createIcons();
+});
+</script>
+{% endblock %}

@@ -80,3 +80,26 @@ class Visit(models.Model):
     
     def __str__(self):
         return f"{self.patient.full_name} - {self.visit_date.strftime('%Y-%m-%d')}"
+
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('appointment', 'قرار ملاقات'),
+        ('reminder', 'یادآوری'),
+        ('system', 'سیستم'),
+        ('visit', 'ویزیت'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='system')
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    related_patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True, blank=True)
+    related_visit = models.ForeignKey(Visit, on_delete=models.CASCADE, null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.title} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
