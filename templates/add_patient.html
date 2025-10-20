@@ -103,7 +103,8 @@
                             <i data-lucide="calendar" class="w-4 h-4 ml-2 text-medical-600"></i>
                             تاریخ تولد *
                         </label>
-                        {{ form.birth_date }}
+                        <span id="birth-date-hidden" style="display:none;">{{ form.birth_date }}</span>
+                        <input type="text" id="birth_date_j" class="form-input" placeholder="تاریخ تولد (شمسی)" autocomplete="off">
                         {% if form.birth_date.errors %}
                             <div class="mt-2 text-sm text-red-600 flex items-center">
                                 <i data-lucide="alert-circle" class="w-4 h-4 ml-1"></i>
@@ -123,17 +124,18 @@
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {% for choice in form.gender %}
+                            {% if choice.data.value == 'M' or choice.data.value == 'F' %}
                             <label class="gender-option flex items-center justify-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-medical-300 hover:bg-medical-50 transition-all duration-200 {% if choice.data.value == form.gender.value %}bg-medical-50 border-medical-500{% endif %}">
                                 <input type="radio" name="{{ form.gender.name }}" value="{{ choice.data.value }}" 
                                        class="sr-only" {% if choice.data.value == form.gender.value %}checked{% endif %}>
                                 <div class="flex flex-col items-center">
-                                    <i data-lucide="{% if choice.data.value == 'M' %}user{% elif choice.data.value == 'F' %}user{% else %}users{% endif %}" 
-                                       class="w-6 h-6 mb-2 text-gray-600"></i>
+                                    <i data-lucide="user" class="w-6 h-6 mb-2 text-gray-600"></i>
                                     <span class="text-sm font-medium text-gray-700">
-                                        {% if choice.data.value == 'M' %}مرد{% elif choice.data.value == 'F' %}زن{% else %}سایر{% endif %}
+                                        {% if choice.data.value == 'M' %}مرد{% else %}زن{% endif %}
                                     </span>
                                 </div>
                             </label>
+                            {% endif %}
                         {% endfor %}
                     </div>
                     {% if form.gender.errors %}
@@ -319,6 +321,69 @@ document.addEventListener('DOMContentLoaded', function() {
     contactInputs.forEach(input => {
         input.addEventListener('focus', updateProgress);
     });
+});
+</script>
+<!-- Persian datepicker (UI) for birth_date -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.2.3/index.min.js"></script>
+<script>
+// Make birth_date a Jalali UI input while keeping original Gregorian hidden
+$(function(){
+    var $hidden = $('input[name="birth_date"]');
+    if ($hidden.length) {
+        // hide original
+        $hidden.attr('type','hidden');
+        // insert visible jalali input after it
+        var $visible = $('<input type="text" id="birth_date_j" class="form-input" placeholder="تاریخ تولد (شمسی)" autocomplete="off">');
+        $hidden.after($visible);
+
+        // prefill visible from existing Gregorian value if any
+        var gVal = $hidden.val();
+        if (gVal) {
+            try {
+                var parts = gVal.split('-');
+                if (parts.length === 3 && window.jalaali) {
+                    var gy = parseInt(parts[0],10), gm = parseInt(parts[1],10), gd = parseInt(parts[2],10);
+                    var j = window.jalaali.toJalaali(gy,gm,gd);
+                    var pad = function(n){return n<10?'0'+n:n;};
+                    $visible.val(j.jy + '/' + pad(j.jm) + '/' + pad(j.jd));
+                }
+            } catch(e) {}
+        }
+
+        // init datepicker (with year/month selection)
+        $visible.pDatepicker({
+            autoClose: true,
+            format: 'YYYY/MM/DD',
+            initialValue: !!$visible.val(),
+            initialValueType: 'persian',
+            calendar: { persian: { locale: 'fa', leapYearMode: 'astronomical' } },
+            toolbox: {
+                calendarSwitch: { enabled: true },
+                todayButton: { enabled: true, text: 'امروز' },
+                submitButton: { enabled: false }
+            },
+            navigator: {
+                enabled: true,
+                scroll: { enabled: true }, // scroll to change year/month
+                text: {
+                    btnNextText: 'بعد',
+                    btnPrevText: 'قبل'
+                }
+            },
+            onSelect: function(unix){
+                try {
+                    var pd = new persianDate(unix);
+                    // store gregorian in hidden field for backend
+                    var g = pd.toCalendar('gregorian').format('YYYY-MM-DD');
+                    $hidden.val(g);
+                } catch(e) {}
+            }
+        });
+    }
 });
 </script>
 {% endblock %}
