@@ -99,12 +99,11 @@
                     
                     <!-- Birth Date -->
                     <div class="form-group">
-                        <label for="{{ form.birth_date.id_for_label }}" class="form-label">
+                        <label for="birth_date" class="form-label">
                             <i data-lucide="calendar" class="w-4 h-4 ml-2 text-medical-600"></i>
                             تاریخ تولد *
                         </label>
-                        <span id="birth-date-hidden" style="display:none;">{{ form.birth_date }}</span>
-                        <input type="text" id="birth_date_j" class="form-input" placeholder="تاریخ تولد (شمسی)" autocomplete="off">
+                        {{ form.birth_date }}
                         {% if form.birth_date.errors %}
                             <div class="mt-2 text-sm text-red-600 flex items-center">
                                 <i data-lucide="alert-circle" class="w-4 h-4 ml-1"></i>
@@ -323,67 +322,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-<!-- Persian datepicker (UI) for birth_date -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script>
+// Persian datepicker is used instead of Flatpickr
+</script>
+<!-- Jalali datepicker for birth_date (single visible input) -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.2.3/index.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
 <script>
-// Make birth_date a Jalali UI input while keeping original Gregorian hidden
+// Persian datepicker for birth_date (direct Jalali storage)
 $(function(){
-    var $hidden = $('input[name="birth_date"]');
-    if ($hidden.length) {
-        // hide original
-        $hidden.attr('type','hidden');
-        // insert visible jalali input after it
-        var $visible = $('<input type="text" id="birth_date_j" class="form-input" placeholder="تاریخ تولد (شمسی)" autocomplete="off">');
-        $hidden.after($visible);
+    var $birthDateInput = $('input[name="birth_date"]');
+    if (!$birthDateInput.length) return;
 
-        // prefill visible from existing Gregorian value if any
-        var gVal = $hidden.val();
-        if (gVal) {
+    // init Persian datepicker (year/month/day selection)
+    $birthDateInput.pDatepicker({
+        autoClose: true,
+        format: 'YYYY/MM/DD',
+        initialValue: !!$birthDateInput.val(),
+        initialValueType: 'persian',
+        calendar: { persian: { locale: 'fa', leapYearMode: 'astronomical' } },
+        toolbox: { calendarSwitch: { enabled: true }, todayButton: { enabled: true, text: 'امروز' } },
+        navigator: { enabled: true, scroll: { enabled: true } },
+        onSelect: function(unix){
             try {
-                var parts = gVal.split('-');
-                if (parts.length === 3 && window.jalaali) {
-                    var gy = parseInt(parts[0],10), gm = parseInt(parts[1],10), gd = parseInt(parts[2],10);
-                    var j = window.jalaali.toJalaali(gy,gm,gd);
-                    var pad = function(n){return n<10?'0'+n:n;};
-                    $visible.val(j.jy + '/' + pad(j.jm) + '/' + pad(j.jd));
-                }
-            } catch(e) {}
-        }
-
-        // init datepicker (with year/month selection)
-        $visible.pDatepicker({
-            autoClose: true,
-            format: 'YYYY/MM/DD',
-            initialValue: !!$visible.val(),
-            initialValueType: 'persian',
-            calendar: { persian: { locale: 'fa', leapYearMode: 'astronomical' } },
-            toolbox: {
-                calendarSwitch: { enabled: true },
-                todayButton: { enabled: true, text: 'امروز' },
-                submitButton: { enabled: false }
-            },
-            navigator: {
-                enabled: true,
-                scroll: { enabled: true }, // scroll to change year/month
-                text: {
-                    btnNextText: 'بعد',
-                    btnPrevText: 'قبل'
-                }
-            },
-            onSelect: function(unix){
-                try {
-                    var pd = new persianDate(unix);
-                    // store gregorian in hidden field for backend
-                    var g = pd.toCalendar('gregorian').format('YYYY-MM-DD');
-                    $hidden.val(g);
-                } catch(e) {}
+                var pd = new persianDate(unix);
+                var jalaliDate = pd.format('YYYY/MM/DD');
+                $birthDateInput.val(jalaliDate);
+                console.log('Selected Jalali date:', jalaliDate); // Debug
+            } catch(e) {
+                console.error('Date selection error:', e);
             }
-        });
-    }
+        }
+    });
 });
 </script>
 {% endblock %}

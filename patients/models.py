@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from datetime import date
 
 
 class Patient(models.Model):
@@ -20,7 +21,7 @@ class Patient(models.Model):
             message='کد ملی باید فقط شامل اعداد باشد'
         )]
     )
-    birth_date = models.DateField()
+    birth_date = models.CharField(max_length=10, help_text="تاریخ تولد به صورت شمسی (YYYY/MM/DD)")
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     phone = models.CharField(
         max_length=15,
@@ -45,9 +46,23 @@ class Patient(models.Model):
     
     @property
     def age(self):
-        from datetime import date
-        today = date.today()
-        return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+        if not self.birth_date:
+            return None
+        
+        try:
+            # Parse Jalali date (YYYY/MM/DD)
+            parts = self.birth_date.split('/')
+            if len(parts) != 3:
+                return None
+                
+            jalali_year = int(parts[0])
+            
+            # Simple age calculation from Jalali year (approximate)
+            current_jalali_year = 1403  # Current Jalali year
+            return current_jalali_year - jalali_year
+                
+        except (ValueError, IndexError):
+            return None
 
 
 class Visit(models.Model):
@@ -56,7 +71,7 @@ class Visit(models.Model):
     diagnosis = models.TextField()
     prescription = models.TextField(blank=True)
     notes = models.TextField(blank=True)
-    next_visit_date = models.DateField(null=True, blank=True)
+    next_visit_date = models.CharField(max_length=10, null=True, blank=True, help_text="تاریخ ویزیت بعدی به صورت شمسی (YYYY/MM/DD)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
