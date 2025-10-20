@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load jalali %}
 
 {% block title %}{{ patient.full_name }} - جزئیات بیمار{% endblock %}
 {% block page_title %}{{ patient.full_name }}{% endblock %}
@@ -78,7 +79,7 @@
                         <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
                         تاریخ تولد:
                     </span>
-                    <span class="font-semibold text-gray-900">{{ patient.birth_date|date:"d M Y" }}</span>
+                    <span class="font-semibold text-gray-900">{{ patient.birth_date|jalali:"%Y/%m/%d" }}</span>
                 </div>
                 <div class="flex justify-between items-center py-2 border-b border-gray-100">
                     <span class="text-gray-600 flex items-center">
@@ -150,7 +151,7 @@
                     </span>
                     <span class="font-semibold text-gray-900">
                         {% if patient.visits.last %}
-                            {{ patient.visits.last.visit_date|date:"d M Y" }}
+                            {{ patient.visits.last.visit_date|jalali:"%Y/%m/%d" }}
                         {% else %}
                             <span class="text-gray-400">هنوز ویزیتی نداشته</span>
                         {% endif %}
@@ -163,7 +164,7 @@
                     </span>
                     <span class="font-semibold text-gray-900">
                         {% if patient.visits.first %}
-                            {{ patient.visits.first.visit_date|date:"d M Y" }}
+                            {{ patient.visits.first.visit_date|jalali:"%Y/%m/%d" }}
                         {% else %}
                             <span class="text-gray-400">هنوز ویزیتی نداشته</span>
                         {% endif %}
@@ -174,7 +175,7 @@
                         <i data-lucide="user-plus" class="w-4 h-4 ml-2 text-gray-400"></i>
                         عضو از:
                     </span>
-                    <span class="font-semibold text-gray-900">{{ patient.created_at|date:"d M Y" }}</span>
+                    <span class="font-semibold text-gray-900">{{ patient.created_at|jalali:"%Y/%m/%d" }}</span>
                 </div>
             </div>
         </div>
@@ -209,7 +210,7 @@
                                 </span>
                                 <span class="text-sm text-gray-600 flex items-center">
                                     <i data-lucide="calendar" class="w-4 h-4 ml-2"></i>
-                                    {{ visit.visit_date|date:"d M Y - H:i" }}
+                                    {{ visit.visit_date|jalali:"%Y/%m/%d - %H:%M" }}
                                 </span>
                             </div>
                             
@@ -249,7 +250,7 @@
                                     <i data-lucide="calendar-plus" class="w-4 h-4 ml-2 text-medical-600"></i>
                                     ویزیت بعدی
                                 </h4>
-                                <p class="text-medical-700 font-medium">{{ visit.next_visit_date|date:"d M Y" }}</p>
+                                <p class="text-medical-700 font-medium">{{ visit.next_visit_date|jalali:"%Y/%m/%d" }}</p>
                             </div>
                             {% endif %}
                         </div>

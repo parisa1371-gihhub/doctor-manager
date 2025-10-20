@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load jalali %}
 
 {% block title %}افزودن ویزیت - {{ patient.full_name }} - سیستم مدیریت بیماران{% endblock %}
 {% block page_title %}افزودن ویزیت جدید{% endblock %}
@@ -150,7 +151,8 @@
                             <i data-lucide="calendar-plus" class="w-4 h-4 ml-2 text-purple-600"></i>
                             تاریخ ویزیت بعدی
                         </label>
-                        {{ form.next_visit_date }}
+                        <span id="next-visit-hidden" style="display:none;">{{ form.next_visit_date }}</span>
+                        <input type="text" id="next_visit_date_j" class="form-input" placeholder="تاریخ شمسی" autocomplete="off">
                         {% if form.next_visit_date.errors %}
                             <div class="mt-2 text-sm text-red-600 flex items-center">
                                 <i data-lucide="alert-circle" class="w-4 h-4 ml-1"></i>
@@ -205,7 +207,7 @@
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-sm font-semibold text-gray-800 flex items-center">
                         <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
-                        {{ visit.visit_date|date:"d M Y - H:i" }}
+                        {{ visit.visit_date|jalali:"%Y/%m/%d - %H:%M" }}
                     </span>
                     <span class="badge badge-info">
                         ویزیت شماره {{ forloop.revcounter }}
@@ -295,6 +297,92 @@ document.addEventListener('DOMContentLoaded', function() {
     if (nextVisitInput) {
         const today = new Date().toISOString().split('T')[0];
         nextVisitInput.setAttribute('min', today);
+
+        // Add Jalali helper label under the input
+        const helper = document.createElement('div');
+        helper.id = 'next-visit-jalali';
+        helper.className = 'text-xs text-gray-600 mt-1';
+        nextVisitInput.parentNode.appendChild(helper);
+
+        // Load jalaali-js for client-side conversion
+        const jalaaliScript = document.createElement('script');
+        jalaaliScript.src = 'https://cdn.jsdelivr.net/npm/jalaali-js@1.2.3/index.min.js';
+        jalaaliScript.onload = () => {
+            const updateJalali = () => {
+                const v = nextVisitInput.value; // expects YYYY-MM-DD
+                if (!v || typeof window.jalaali === 'undefined') {
+                    helper.textContent = '';
+                    return;
+                }
+                const parts = v.split('-');
+                if (parts.length !== 3) {
+                    helper.textContent = '';
+                    return;
+                }
+                const gy = parseInt(parts[0], 10);
+                const gm = parseInt(parts[1], 10);
+                const gd = parseInt(parts[2], 10);
+                try {
+                    const j = window.jalaali.toJalaali(gy, gm, gd);
+                    const pad = (n) => (n < 10 ? '0' + n : '' + n);
+                    helper.textContent = `تاریخ شمسی: ${j.jy}/${pad(j.jm)}/${pad(j.jd)}`;
+                } catch (e) {
+                    helper.textContent = '';
+                }
+            };
+            nextVisitInput.addEventListener('input', updateJalali);
+            nextVisitInput.addEventListener('change', updateJalali);
+            updateJalali();
+        };
+        document.body.appendChild(jalaaliScript);
+    }
+});
+</script>
+<!-- Persian datepicker (UI) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+<script>
+// Turn next_visit_date into a Jalali UI input and keep Gregorian in the hidden field
+$(function(){
+    var $hidden = $('input[name="next_visit_date"]');
+    var $visible = $('#next_visit_date_j');
+    if ($hidden.length && $visible.length) {
+        // ensure original is hidden
+        $hidden.attr('type','hidden');
+
+        // Prefill from existing Gregorian
+        var gVal = $hidden.val();
+        if (gVal) {
+            try {
+                var parts = gVal.split('-');
+                if (parts.length === 3) {
+                    var gy = parseInt(parts[0],10), gm = parseInt(parts[1],10), gd = parseInt(parts[2],10);
+                    var j = window.jalaali ? window.jalaali.toJalaali(gy,gm,gd) : null;
+                    if (j) {
+                        var pad = function(n){return n<10?'0'+n:n;};
+                        $visible.val(j.jy + '/' + pad(j.jm) + '/' + pad(j.jd));
+                    }
+                }
+            } catch(e) {}
+        }
+
+        $visible.pDatepicker({
+            autoClose: true,
+            format: 'YYYY/MM/DD',
+            initialValue: !!$visible.val(),
+            toolbox: {calendarSwitch:{enabled:true}},
+            calendar: {persian: {locale: 'fa', leapYearMode: 'astronomical'}},
+            onSelect: function(unix){
+                try {
+                    var pd = new persianDate(unix);
+                    // Convert selected persian date to gregorian for backend
+                    var g = pd.toCalendar('gregorian').format('YYYY-MM-DD');
+                    $hidden.val(g);
+                } catch(e) {}
+            }
+        });
     }
 });
 </script>

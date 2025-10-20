@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load jalali %}
 
 {% block title %}لیست بیماران - سیستم مدیریت بیماران{% endblock %}
 {% block page_title %}لیست بیماران{% endblock %}
@@ -120,7 +121,7 @@
                                 {% if patient.visits.first %}
                                     <div class="flex items-center text-gray-900">
                                         <i data-lucide="calendar" class="w-4 h-4 ml-2 text-gray-400"></i>
-                                        {{ patient.visits.first.visit_date|date:"d M Y" }}
+                                        {{ patient.visits.first.visit_date|jalali:"%Y/%m/%d" }}
                                     </div>
                                 {% else %}
                                     <span class="badge badge-warning">هنوز ویزیتی نداشته</span>
