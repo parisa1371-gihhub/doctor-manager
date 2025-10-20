@@ -1,23 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}افزودن بیمار جدید - سیستم مدیریت بیماران{% endblock %}
-{% block page_title %}افزودن بیمار جدید{% endblock %}
-{% block page_subtitle %}ثبت اطلاعات بیمار جدید در سیستم{% endblock %}
+{% block title %}ویرایش بیمار - {{ patient.full_name }} - سیستم مدیریت بیماران{% endblock %}
+{% block page_title %}ویرایش بیمار{% endblock %}
+{% block page_subtitle %}ویرایش اطلاعات {{ patient.full_name }}{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
-    <!-- Progress Steps -->
-    <div class="mb-8">
-        <div class="flex items-center justify-center space-x-4 space-x-reverse">
-            <div class="flex items-center">
-                <div class="w-8 h-8 bg-medical-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">1</div>
-                <span class="mr-2 text-sm font-medium text-gray-700">اطلاعات شخصی</span>
+    <!-- Patient Info Card -->
+    <div class="bg-gradient-to-r from-medical-500 to-medical-600 rounded-2xl p-6 text-white mb-8">
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <i data-lucide="user" class="w-8 h-8 text-white"></i>
             </div>
-            <div class="w-16 h-0.5 bg-gray-300"></div>
-            <div class="flex items-center">
-                <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold">2</div>
-                <span class="mr-2 text-sm font-medium text-gray-500">اطلاعات تماس</span>
+            <div>
+                <h2 class="text-2xl font-bold">{{ patient.full_name }}</h2>
+                <p class="text-medical-100">ویرایش اطلاعات شخصی</p>
             </div>
         </div>
     </div>
@@ -25,10 +23,10 @@
     <div class="card">
         <div class="card-header">
             <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                <i data-lucide="user-plus" class="w-6 h-6 ml-2 text-medical-600"></i>
-                افزودن بیمار جدید
+                <i data-lucide="edit" class="w-6 h-6 ml-2 text-medical-600"></i>
+                ویرایش اطلاعات بیمار
             </h3>
-            <p class="text-gray-600 mt-2">لطفاً اطلاعات بیمار را با دقت وارد کنید</p>
+            <p class="text-gray-600 mt-2">اطلاعات بیمار را ویرایش کنید</p>
         </div>
 
         <form method="post" class="space-y-8" id="patientForm">
@@ -195,13 +193,13 @@
             <!-- Form Actions -->
             <div class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-200">
                 <button type="submit" class="btn-primary flex-1 sm:flex-none">
-                    <i data-lucide="user-plus" class="w-5 h-5 ml-2"></i>
-                    افزودن بیمار
+                    <i data-lucide="save" class="w-5 h-5 ml-2"></i>
+                    ذخیره تغییرات
                 </button>
                 
-                <a href="{% url 'patients' %}" class="btn-secondary flex-1 sm:flex-none text-center">
+                <a href="{% url 'patient_detail' patient.id %}" class="btn-secondary flex-1 sm:flex-none text-center">
                     <i data-lucide="arrow-left" class="w-5 h-5 ml-2"></i>
-                    بازگشت به لیست بیماران
+                    بازگشت به جزئیات بیمار
                 </a>
             </div>
         </form>
@@ -301,36 +299,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Progress indicator update
-    function updateProgress() {
-        const step2 = document.querySelector('.flex.items-center:nth-child(3) .w-8');
-        const step2Text = document.querySelector('.flex.items-center:nth-child(3) span');
-        
-        if (step2 && step2Text) {
-            step2.classList.remove('bg-gray-300', 'text-gray-600');
-            step2.classList.add('bg-medical-600', 'text-white');
-            step2Text.classList.remove('text-gray-500');
-            step2Text.classList.add('text-gray-700');
-        }
-    }
-    
-    // Update progress when user starts filling contact info
-    const contactInputs = document.querySelectorAll('input[name="phone"], textarea[name="address"]');
-    contactInputs.forEach(input => {
-        input.addEventListener('focus', updateProgress);
-    });
 });
 </script>
-<script>
-// Persian datepicker is used instead of Flatpickr
-</script>
-<!-- Jalali datepicker for birth_date (single visible input) -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.2.3/index.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
 <script>
 // Persian datepicker for birth_date (direct Jalali storage)
 $(function(){
@@ -359,6 +329,11 @@ $(function(){
     });
 });
 </script>
-
+<!-- Jalali datepicker for birth_date (single visible input) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.2.3/index.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
 {% endblock %}
 {% endblock %}

@@ -52,12 +52,18 @@
         <!-- Personal Information -->
         <div class="card">
             <div class="card-header">
-                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-                    <div class="w-8 h-8 bg-medical-100 rounded-lg flex items-center justify-center ml-3">
-                        <i data-lucide="user" class="w-5 h-5 text-medical-600"></i>
-                    </div>
-                    اطلاعات شخصی
-                </h3>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <div class="w-8 h-8 bg-medical-100 rounded-lg flex items-center justify-center ml-3">
+                            <i data-lucide="user" class="w-5 h-5 text-medical-600"></i>
+                        </div>
+                        اطلاعات شخصی
+                    </h3>
+                    <a href="{% url 'edit_patient' patient.id %}" class="inline-flex items-center px-3 py-2 bg-medical-600 text-white text-sm rounded-lg hover:bg-medical-700 transition-colors duration-200">
+                        <i data-lucide="edit" class="w-4 h-4 ml-1"></i>
+                        ویرایش
+                    </a>
+                </div>
             </div>
             <div class="space-y-4">
                 <div class="flex justify-between items-center py-2 border-b border-gray-100">
@@ -334,13 +340,6 @@ function toggleVisitDetails(visitId) {
 }
 </script>
 
-<!-- Home Button at bottom -->
-<div style="margin-top: 32px; text-align: center;">
-    <a href="{% url 'dashboard' %}" class="inline-flex items-center px-6 py-3 bg-medical-600 text-white rounded-lg hover:bg-medical-700 transition-colors duration-200">
-        <i data-lucide="home" class="w-5 h-5 ml-2"></i>
-        بازگشت به خانه
-    </a>
-</div>
 {% endblock %}
 {% endblock %}
 

@@ -93,6 +93,27 @@ def patient_detail(request, patient_id):
     return render(request, 'patient_detail.html', context)
 
 
+def edit_patient(request, patient_id):
+    """Edit patient information"""
+    patient = get_object_or_404(Patient, id=patient_id)
+    
+    if request.method == 'POST':
+        form = PatientForm(request.POST, instance=patient)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'اطلاعات بیمار {patient.full_name} با موفقیت به‌روزرسانی شد!')
+            return redirect('patient_detail', patient_id=patient.id)
+    else:
+        form = PatientForm(instance=patient)
+    
+    context = {
+        'form': form,
+        'patient': patient,
+    }
+    
+    return render(request, 'edit_patient.html', context)
+
+
 def add_visit(request, patient_id):
     """Add a new visit for a patient"""
     patient = get_object_or_404(Patient, id=patient_id)
