@@ -37,6 +37,76 @@
     <!-- Persian Font -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
     
+    <!-- Theme CSS -->
+    <style>
+    /* Theme Variables */
+    :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8fafc;
+        --text-primary: #111827;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+        --shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+        --bg-primary: #1f2937;
+        --bg-secondary: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
+        --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* Auto Theme (follows system preference) */
+    @media (prefers-color-scheme: dark) {
+        [data-theme="auto"] {
+            --bg-primary: #1f2937;
+            --bg-secondary: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border-color: #4b5563;
+            --shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+    }
+
+    /* Apply theme variables */
+    body {
+        background-color: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+    }
+
+    .bg-gray-50 {
+        background-color: var(--bg-secondary) !important;
+    }
+
+    .bg-white {
+        background-color: var(--bg-primary) !important;
+    }
+
+    .text-gray-900 {
+        color: var(--text-primary) !important;
+    }
+
+    .text-gray-600 {
+        color: var(--text-secondary) !important;
+    }
+
+    .border-gray-200 {
+        border-color: var(--border-color) !important;
+    }
+
+    .shadow-sm {
+        box-shadow: var(--shadow) !important;
+    }
+
+    /* Theme transition */
+    * {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    </style>
+    
     <!-- Flatpickr Datepicker (CSS) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
@@ -44,11 +114,30 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     
+    <!-- Translations -->
+    <script src="{% static 'js/translations.js' %}"></script>
+    
+    <!-- Theme JavaScript -->
+    <script>
+    // Theme management
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }
+
+    // Initialize theme on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get theme from session or localStorage
+        const currentTheme = '{{ current_theme|default:"light" }}';
+        applyTheme(currentTheme);
+    });
+    </script>
+    
     <!-- Additional Meta Tags -->
     <meta name="description" content="سیستم مدیریت بیماران پزشک - داشبورد حرفه‌ای برای مدیریت پرونده‌های پزشکی">
     <meta name="theme-color" content="#0ea5e9">
 </head>
-<body class="bg-gray-50" style="font-family: 'Vazir', 'Tahoma', sans-serif;">
+<body class="bg-gray-50" style="font-family: 'Vazir', 'Tahoma', sans-serif;" data-language="{{ current_language|default:'fa' }}">
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
     
@@ -73,27 +162,27 @@
                 <div class="space-y-2">
                     <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                         <i data-lucide="layout-dashboard" class="w-5 h-5 ml-3"></i>
-                        <span>داشبورد</span>
+                        <span data-translate="داشبورد">داشبورد</span>
                     </a>
                     
                     <a href="{% url 'patients' %}" class="sidebar-link {% if request.resolver_match.url_name == 'patients' %}active{% endif %}">
                         <i data-lucide="users" class="w-5 h-5 ml-3"></i>
-                        <span>لیست بیماران</span>
+                        <span data-translate="بیماران">لیست بیماران</span>
                     </a>
                     
                     <a href="{% url 'add_patient' %}" class="sidebar-link {% if request.resolver_match.url_name == 'add_patient' %}active{% endif %}">
                         <i data-lucide="user-plus" class="w-5 h-5 ml-3"></i>
-                        <span>افزودن بیمار</span>
+                        <span data-translate="افزودن بیمار">افزودن بیمار</span>
                     </a>
                     
                     <a href="{% url 'appointments' %}" class="sidebar-link {% if request.resolver_match.url_name == 'appointments' %}active{% endif %}">
                         <i data-lucide="calendar" class="w-5 h-5 ml-3"></i>
-                        <span>قرار ملاقات‌ها</span>
+                        <span data-translate="قرار ملاقات‌ها">قرار ملاقات‌ها</span>
                     </a>
                     
                     <a href="{% url 'settings' %}" class="sidebar-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
                         <i data-lucide="settings" class="w-5 h-5 ml-3"></i>
-                        <span>تنظیمات</span>
+                        <span data-translate="تنظیمات">تنظیمات</span>
                     </a>
                 </div>
             </nav>
@@ -145,12 +234,12 @@
                         </a>
                         
                         <!-- Logout Button -->
-                        {% if user.is_authenticated %}
-                        <a href="{% url 'logout' %}" class="btn-secondary">
-                            <i data-lucide="log-out" class="w-4 h-4 ml-2"></i>
-                            خروج
-                        </a>
-                        {% endif %}
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="btn-secondary">
+                    <i data-lucide="log-out" class="w-4 h-4 ml-2"></i>
+                    <span data-translate="خروج">خروج</span>
+                </a>
+                {% endif %}
                     </div>
                 </div>
             </header>

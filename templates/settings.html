@@ -5,6 +5,76 @@
 {% block page_title %}تنظیمات{% endblock %}
 {% block page_subtitle %}مدیریت تنظیمات سیستم و پروفایل{% endblock %}
 
+{% block extra_css %}
+<style>
+/* Theme Variables */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --bg-primary: #1f2937;
+    --bg-secondary: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --border-color: #4b5563;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Auto Theme (follows system preference) */
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] {
+        --bg-primary: #1f2937;
+        --bg-secondary: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
+        --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+}
+
+/* Apply theme variables */
+body {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+.card, .settings-card {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.text-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.bg-secondary {
+    background-color: var(--bg-secondary) !important;
+}
+
+.border-color {
+    border-color: var(--border-color) !important;
+}
+
+/* Theme transition */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div style="padding: 2rem;">
     <!-- Header Section -->
@@ -26,32 +96,93 @@
                 <div style="width: 2rem; height: 2rem; background: #e0f2fe; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-left: 0.75rem;">
                     <i data-lucide="user" style="width: 1.25rem; height: 1.25rem; color: #0284c7;"></i>
                 </div>
-                <h3 style="font-size: 1.125rem; font-weight: 600; color: #374151;">پروفایل پزشک</h3>
+                <h3 style="font-size: 1.125rem; font-weight: 600; color: #374151;" data-translate="پروفایل پزشک">پروفایل پزشک</h3>
             </div>
             
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Profile Edit Form -->
+            <form method="post" id="profile-form" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_profile">
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="display: block; font-weight: 500; color: #111827; margin-bottom: 0.5rem;" data-translate="نام">نام</label>
+                        <input type="text" name="first_name" value="{{ user.first_name }}" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: white;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; font-weight: 500; color: #111827; margin-bottom: 0.5rem;" data-translate="نام خانوادگی">نام خانوادگی</label>
+                        <input type="text" name="last_name" value="{{ user.last_name }}" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: white;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; font-weight: 500; color: #111827; margin-bottom: 0.5rem;" data-translate="ایمیل">ایمیل</label>
+                        <input type="email" name="email" value="{{ user.email }}" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: white;">
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="submit" style="background: #16a34a; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="save" style="width: 1rem; height: 1rem;"></i>
+                            <span data-translate="ذخیره">ذخیره</span>
+                        </button>
+                        <button type="button" onclick="toggleProfileForm()" style="background: #6b7280; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="x" style="width: 1rem; height: 1rem;"></i>
+                            <span data-translate="لغو">لغو</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Profile Display -->
+            <div id="profile-display" style="display: flex; flex-direction: column; gap: 1rem;">
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
                     <div>
-                        <p style="font-weight: 500; color: #111827; margin: 0;">نام کاربری</p>
+                        <p style="font-weight: 500; color: #111827; margin: 0;" data-translate="نام کاربری">نام کاربری</p>
                         <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">{{ user.username }}</p>
                     </div>
-                    <i data-lucide="edit" style="width: 1rem; height: 1rem; color: #9ca3af;"></i>
+                    <div style="width: 2rem; height: 2rem; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="user" style="width: 1rem; height: 1rem; color: #0284c7;"></i>
+                    </div>
                 </div>
                 
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
                     <div>
-                        <p style="font-weight: 500; color: #111827; margin: 0;">نام کامل</p>
+                        <p style="font-weight: 500; color: #111827; margin: 0;" data-translate="نام کامل">نام کامل</p>
                         <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">{{ user.get_full_name|default:"تعریف نشده" }}</p>
                     </div>
-                    <i data-lucide="edit" style="width: 1rem; height: 1rem; color: #9ca3af;"></i>
+                    <button onclick="toggleProfileForm()" style="background: #0284c7; color: white; padding: 0.5rem; border: none; border-radius: 0.375rem; cursor: pointer;">
+                        <i data-lucide="edit" style="width: 1rem; height: 1rem;"></i>
+                    </button>
                 </div>
                 
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
                     <div>
-                        <p style="font-weight: 500; color: #111827; margin: 0;">ایمیل</p>
+                        <p style="font-weight: 500; color: #111827; margin: 0;" data-translate="ایمیل">ایمیل</p>
                         <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">{{ user.email|default:"تعریف نشده" }}</p>
                     </div>
-                    <i data-lucide="edit" style="width: 1rem; height: 1rem; color: #9ca3af;"></i>
+                    <button onclick="toggleProfileForm()" style="background: #0284c7; color: white; padding: 0.5rem; border: none; border-radius: 0.375rem; cursor: pointer;">
+                        <i data-lucide="edit" style="width: 1rem; height: 1rem;"></i>
+                    </button>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+                    <div>
+                        <p style="font-weight: 500; color: #111827; margin: 0;" data-translate="تاریخ عضویت">تاریخ عضویت</p>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">{{ user.date_joined|date:"Y/m/d H:i" }}</p>
+                    </div>
+                    <div style="width: 2rem; height: 2rem; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="calendar" style="width: 1rem; height: 1rem; color: #0284c7;"></i>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
+                    <div>
+                        <p style="font-weight: 500; color: #111827; margin: 0;" data-translate="آخرین ورود">آخرین ورود</p>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">{{ user.last_login|date:"Y/m/d H:i"|default:"هرگز" }}</p>
+                    </div>
+                    <div style="width: 2rem; height: 2rem; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="clock" style="width: 1rem; height: 1rem; color: #0284c7;"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,29 +196,104 @@
                 <h3 style="font-size: 1.125rem; font-weight: 600; color: #374151;">تنظیمات سیستم</h3>
             </div>
             
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
-                    <div>
-                        <p style="font-weight: 500; color: #111827; margin: 0;">زبان سیستم</p>
-                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">فارسی</p>
-                    </div>
-                    <i data-lucide="globe" style="width: 1rem; height: 1rem; color: #9ca3af;"></i>
+            <!-- Messages -->
+            {% if messages %}
+                <div style="margin-bottom: 1.5rem;">
+                    {% for message in messages %}
+                        <div style="padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.5rem; {% if message.tags == 'error' %}background: #fef2f2; border: 1px solid #fecaca; color: #dc2626;{% else %}background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a;{% endif %}">
+                            <div style="display: flex; align-items: center;">
+                                {% if message.tags == 'error' %}
+                                    <i data-lucide="alert-circle" style="width: 1rem; height: 1rem; margin-left: 0.5rem;"></i>
+                                {% else %}
+                                    <i data-lucide="check-circle" style="width: 1rem; height: 1rem; margin-left: 0.5rem;"></i>
+                                {% endif %}
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Language Settings -->
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-size: 1rem; font-weight: 500; color: #374151; margin-bottom: 0.75rem;" data-translate="زبان سیستم">زبان سیستم</h4>
+                
+                <!-- Quick Language Buttons -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+                    <button data-change-language="fa" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.375rem; background: {% if current_language == 'fa' %}#16a34a; color: white;{% else %}white; color: #374151;{% endif %}; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                        <span>🇮🇷</span>
+                        <span data-translate="فارسی (Farsi)">فارسی</span>
+                    </button>
+                    <button data-change-language="en" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.375rem; background: {% if current_language == 'en' %}#16a34a; color: white;{% else %}white; color: #374151;{% endif %}; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                        <span>🇺🇸</span>
+                        <span data-translate="English">English</span>
+                    </button>
                 </div>
                 
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
-                    <div>
-                        <p style="font-weight: 500; color: #111827; margin: 0;">فرمت تاریخ</p>
-                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">شمسی (YYYY/MM/DD)</p>
+                <!-- Traditional Form -->
+                <form method="post" style="display: flex; align-items: center; gap: 0.75rem;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="change_language">
+                    <select name="language" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; background: white; flex: 1;">
+                        <option value="fa" {% if current_language == 'fa' %}selected{% endif %}>فارسی (Farsi)</option>
+                        <option value="en" {% if current_language == 'en' %}selected{% endif %}>English</option>
+                    </select>
+                    <button type="submit" style="background: #16a34a; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                        <i data-lucide="save" style="width: 1rem; height: 1rem;"></i>
+                        <span data-translate="ذخیره">ذخیره</span>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Theme Settings -->
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-size: 1rem; font-weight: 500; color: #374151; margin-bottom: 0.75rem;">تم سیستم</h4>
+                <form method="post" style="display: flex; align-items: center; gap: 0.75rem;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="change_theme">
+                    <select name="theme" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; background: white; flex: 1;">
+                        <option value="light" {% if current_theme == 'light' %}selected{% endif %}>روشن</option>
+                        <option value="dark" {% if current_theme == 'dark' %}selected{% endif %}>تیره</option>
+                        <option value="auto" {% if current_theme == 'auto' %}selected{% endif %}>خودکار</option>
+                    </select>
+                    <button type="submit" style="background: #16a34a; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                        <i data-lucide="palette" style="width: 1rem; height: 1rem;"></i>
+                        اعمال
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Notifications Settings -->
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="font-size: 1rem; font-weight: 500; color: #374151; margin-bottom: 0.75rem;">اعلان‌ها</h4>
+                <form method="post" style="display: flex; align-items: center; gap: 0.75rem;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle_notifications">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; flex: 1;">
+                        <input type="checkbox" name="notifications_enabled" {% if notifications_enabled %}checked{% endif %} style="width: 1rem; height: 1rem;">
+                        <span style="font-size: 0.875rem; color: #4b5563;">فعال کردن اعلان‌ها</span>
+                    </label>
+                    <button type="submit" style="background: #16a34a; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                        <i data-lucide="bell" style="width: 1rem; height: 1rem;"></i>
+                        ذخیره
+                    </button>
+                </form>
+            </div>
+            
+            <!-- System Info -->
+            <div style="border-top: 1px solid #e5e7eb; padding-top: 1rem;">
+                <h4 style="font-size: 1rem; font-weight: 500; color: #374151; margin-bottom: 0.75rem;">اطلاعات سیستم</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                        <span style="font-weight: 500; color: #111827;">فرمت تاریخ:</span>
+                        <span style="font-size: 0.875rem; color: #6b7280;">شمسی (YYYY/MM/DD)</span>
                     </div>
-                    <i data-lucide="calendar" style="width: 1rem; height: 1rem; color: #9ca3af;"></i>
-                </div>
-                
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f8fafc; border-radius: 0.5rem;">
-                    <div>
-                        <p style="font-weight: 500; color: #111827; margin: 0;">وضعیت اعلان‌ها</p>
-                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">فعال</p>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: #f8fafc; border-radius: 0.5rem;">
+                        <span style="font-weight: 500; color: #111827;">وضعیت اعلان‌ها:</span>
+                        <span style="font-size: 0.875rem; color: {% if notifications_enabled %}#16a34a{% else %}#dc2626{% endif %};">
+                            {% if notifications_enabled %}فعال{% else %}غیرفعال{% endif %}
+                        </span>
                     </div>
-                    <i data-lucide="bell" style="width: 1rem; height: 1rem; color: #9ca3af;"></i>
                 </div>
             </div>
         </div>
@@ -181,6 +387,67 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Lucide icons
     lucide.createIcons();
+});
+
+// Toggle profile form
+function toggleProfileForm() {
+    const profileForm = document.getElementById('profile-form');
+    const profileDisplay = document.getElementById('profile-display');
+    
+    if (profileForm.style.display === 'none') {
+        profileForm.style.display = 'block';
+        profileDisplay.style.display = 'none';
+    } else {
+        profileForm.style.display = 'none';
+        profileDisplay.style.display = 'flex';
+    }
+}
+
+// Form validation
+document.getElementById('profile-form').addEventListener('submit', function(e) {
+    const firstName = document.querySelector('input[name="first_name"]').value.trim();
+    const lastName = document.querySelector('input[name="last_name"]').value.trim();
+    const email = document.querySelector('input[name="email"]').value.trim();
+    
+    if (!firstName || !lastName) {
+        e.preventDefault();
+        alert('نام و نام خانوادگی الزامی است.');
+        return false;
+    }
+    
+    if (!email || !email.includes('@')) {
+        e.preventDefault();
+        alert('ایمیل معتبر وارد کنید.');
+        return false;
+    }
+});
+
+// Theme management
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+}
+
+// Initialize theme on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Get theme from session or localStorage
+    const currentTheme = '{{ current_theme|default:"light" }}';
+    applyTheme(currentTheme);
+    
+    // Add event listener to theme form
+    const themeSelect = document.querySelector('select[name="theme"]');
+    if (themeSelect) {
+        themeSelect.addEventListener('change', function() {
+            const theme = this.value;
+            applyTheme(theme);
+            
+            // Submit form to save to session
+            const form = this.closest('form');
+            if (form) {
+                form.submit();
+            }
+        });
+    }
 });
 </script>
 {% endblock %}

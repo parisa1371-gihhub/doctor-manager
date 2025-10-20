@@ -266,8 +266,73 @@ def create_appointment_notifications():
 
 def settings_page(request):
     """Settings page for system configuration"""
+    if request.method == 'POST':
+        # Handle settings form submission
+        action = request.POST.get('action')
+        
+        if action == 'change_language':
+            language = request.POST.get('language')
+            if language in ['fa', 'en']:
+                # Store language preference in session
+                request.session['language'] = language
+                messages.success(request, f'زبان سیستم به {language} تغییر یافت.')
+            else:
+                messages.error(request, 'زبان انتخابی معتبر نیست.')
+        
+        elif action == 'toggle_notifications':
+            notifications_enabled = request.POST.get('notifications_enabled') == 'on'
+            request.session['notifications_enabled'] = notifications_enabled
+            status = 'فعال' if notifications_enabled else 'غیرفعال'
+            messages.success(request, f'اعلان‌ها {status} شدند.')
+        
+        elif action == 'change_theme':
+            theme = request.POST.get('theme')
+            if theme in ['light', 'dark', 'auto']:
+                request.session['theme'] = theme
+                messages.success(request, f'تم سیستم به {theme} تغییر یافت.')
+            else:
+                messages.error(request, 'تم انتخابی معتبر نیست.')
+        
+        elif action == 'update_profile':
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            email = request.POST.get('email', '').strip()
+            
+            # Validation
+            if not first_name or not last_name:
+                messages.error(request, 'نام و نام خانوادگی الزامی است.')
+            elif not email or '@' not in email:
+                messages.error(request, 'ایمیل معتبر وارد کنید.')
+            else:
+                try:
+                    # Check if email is already used by another user
+                    if User.objects.filter(email=email).exclude(id=request.user.id).exists():
+                        messages.error(request, 'این ایمیل قبلاً توسط کاربر دیگری استفاده شده است.')
+                    else:
+                        # Update user profile
+                        request.user.first_name = first_name
+                        request.user.last_name = last_name
+                        request.user.email = email
+                        request.user.save()
+                        
+                        messages.success(request, f'پروفایل شما با موفقیت به‌روزرسانی شد! خوش آمدید، دکتر {first_name} {last_name}')
+                except Exception as e:
+                    messages.error(request, f'خطا در به‌روزرسانی پروفایل: {str(e)}')
+        
+        return redirect('settings')
+    
+    # Get current settings from session
+    current_language = request.session.get('language', 'fa')
+    notifications_enabled = request.session.get('notifications_enabled', True)
+    current_theme = request.session.get('theme', 'light')
+    
     context = {
         'user': request.user,
+        'current_language': current_language,
+        'notifications_enabled': notifications_enabled,
+        'current_theme': current_theme,
+        'django_version': '5.1.7',
+        'system_startup_date': datetime.now(),
     }
     return render(request, 'settings.html', context)
 

@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'patients.middleware.LanguageMiddleware',
 ]
 
 ROOT_URLCONF = 'doctormanager.urls'
@@ -64,6 +65,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'patients.context_processors.notifications_context',
+                'patients.context_processors.settings_context',
             ],
         },
     },
