@@ -12,6 +12,9 @@ from .forms import PatientForm, VisitForm
 
 def dashboard(request):
     """Dashboard view with statistics and recent activity"""
+    # Create appointment notifications for upcoming appointments
+    create_appointment_notifications()
+    
     # Get statistics
     total_patients = Patient.objects.count()
     
@@ -217,19 +220,26 @@ def mark_notification_read(request, notification_id):
 
 
 def create_appointment_notifications():
-    """Create notifications for upcoming appointments"""
+    """Create notifications for upcoming appointments (next 7 days)"""
     from datetime import datetime, timedelta
     import jdatetime
     
     today = datetime.now().date()
     next_week = today + timedelta(days=7)
     
+    # Clean up orphaned notifications (notifications for deleted patients)
+    orphaned_notifications = Notification.objects.filter(
+        related_patient__isnull=True
+    )
+    if orphaned_notifications.exists():
+        orphaned_notifications.delete()
+    
     # Get visits with next_visit_date in the next 7 days
     visits = Visit.objects.filter(
         next_visit_date__isnull=False
     ).exclude(
         next_visit_date=''
-    )
+    ).select_related('patient')
     
     for visit in visits:
         try:
@@ -244,24 +254,53 @@ def create_appointment_notifications():
                 jalali_date = jdatetime.date(jalali_year, jalali_month, jalali_day)
                 gregorian_date = jalali_date.togregorian()
                 
+                # Create notification for appointments in the next 7 days
                 if today <= gregorian_date <= next_week:
-                    # Check if notification already exists
+                    # Check if notification already exists for this visit
                     existing_notification = Notification.objects.filter(
                         related_visit=visit,
                         notification_type='appointment',
-                        title__contains=visit.patient.full_name
+                        is_read=False
                     ).first()
                     
                     if not existing_notification:
+                        # Calculate days until appointment
+                        days_until = (gregorian_date - today).days
+                        
+                        if days_until == 0:
+                            title = f"قرار ملاقات امروز - {visit.patient.full_name}"
+                            message = f"قرار ملاقات با {visit.patient.full_name} امروز است."
+                        elif days_until == 1:
+                            title = f"قرار ملاقات فردا - {visit.patient.full_name}"
+                            message = f"قرار ملاقات با {visit.patient.full_name} فردا است."
+                        elif days_until <= 3:
+                            title = f"قرار ملاقات نزدیک - {visit.patient.full_name}"
+                            message = f"قرار ملاقات با {visit.patient.full_name} در {days_until} روز آینده ({visit.next_visit_date}) است."
+                        else:
+                            title = f"قرار ملاقات هفته آینده - {visit.patient.full_name}"
+                            message = f"قرار ملاقات با {visit.patient.full_name} در {days_until} روز آینده ({visit.next_visit_date}) است."
+                        
                         Notification.objects.create(
-                            title=f"قرار ملاقات نزدیک - {visit.patient.full_name}",
-                            message=f"قرار ملاقات با {visit.patient.full_name} در تاریخ {visit.next_visit_date} نزدیک است.",
+                            title=title,
+                            message=message,
                             notification_type='appointment',
                             related_patient=visit.patient,
                             related_visit=visit
                         )
-        except:
+        except Exception as e:
+            # Log error but continue processing
             continue
+
+
+def create_appointment_notifications_manual(request):
+    """Manually create appointment notifications"""
+    try:
+        create_appointment_notifications()
+        messages.success(request, 'اعلان‌های قرار ملاقات با موفقیت ایجاد شدند.')
+    except Exception as e:
+        messages.error(request, f'خطا در ایجاد اعلان‌ها: {str(e)}')
+    
+    return redirect('dashboard')
 
 
 def settings_page(request):
