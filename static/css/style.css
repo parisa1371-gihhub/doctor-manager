@@ -246,17 +246,99 @@ textarea {
 }
 
 /* Responsive utilities */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
 @media (max-width: 768px) {
   .card {
     padding: 16px;
+    margin: 8px;
   }
   
   .table-container {
     overflow-x: auto;
+    margin: 8px;
   }
   
   .btn-primary, .btn-secondary, .btn-success {
     padding: 8px 16px;
     font-size: 14px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .form-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .stat-card {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .table-cell {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+  
+  /* Mobile grid adjustments */
+  .mobile-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  
+  /* Mobile form adjustments */
+  .mobile-form {
+    padding: 16px;
+  }
+  
+  .mobile-form .form-group {
+    margin-bottom: 16px;
+  }
+  
+  /* Mobile table adjustments */
+  .mobile-table {
+    font-size: 12px;
+  }
+  
+  .mobile-table th,
+  .mobile-table td {
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 12px;
+    margin: 4px;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-success {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+  
+  .table-container {
+    margin: 4px;
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+  
+  /* Very small screens */
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .mobile-full {
+    width: 100% !important;
   }
 }

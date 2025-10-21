@@ -277,18 +277,65 @@
         function toggleMobileMenu() {
             sidebar.classList.toggle('translate-x-full');
             mobileMenuOverlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+        }
+        
+        function closeMobileMenu() {
+            sidebar.classList.add('translate-x-full');
+            mobileMenuOverlay.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
         }
         
         mobileMenuButton.addEventListener('click', toggleMobileMenu);
-        mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
         
         // Close mobile menu on window resize
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 1024) {
-                sidebar.classList.remove('translate-x-full');
-                mobileMenuOverlay.classList.add('hidden');
+                closeMobileMenu();
             }
         });
+        
+        // Close mobile menu when clicking on sidebar links
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    closeMobileMenu();
+                }
+            });
+        });
+        
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const swipeDistance = touchEndX - touchStartX;
+            
+            if (Math.abs(swipeDistance) > swipeThreshold) {
+                if (swipeDistance > 0 && window.innerWidth < 1024) {
+                    // Swipe right - open menu
+                    if (sidebar.classList.contains('translate-x-full')) {
+                        toggleMobileMenu();
+                    }
+                } else if (swipeDistance < 0) {
+                    // Swipe left - close menu
+                    if (!sidebar.classList.contains('translate-x-full')) {
+                        closeMobileMenu();
+                    }
+                }
+            }
+        }
     </script>
     
     {% block extra_js %}
