@@ -382,12 +382,18 @@ def login_view(request):
         return redirect('dashboard')
     
     if request.method == 'POST':
+        first_name = request.POST.get('first_name')
         username = request.POST.get('username')
         password = request.POST.get('password')
         
-        if username and password:
+        if first_name and username and password:
             user = authenticate(request, username=username, password=password)
             if user is not None:
+                # Update user's first name if provided
+                if first_name and first_name != user.first_name:
+                    user.first_name = first_name
+                    user.save()
+                
                 login(request, user)
                 messages.success(request, f'خوش آمدید، دکتر {user.get_full_name() or user.username}!')
                 return redirect('dashboard')
